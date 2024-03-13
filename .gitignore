@@ -1,0 +1,6 @@
+./.idea
+*.xml
+*.iml
+*.pycpython_api.py
+*.pyc
+*.env
