@@ -1,8 +1,7 @@
 [
     {
-       "name": "",
-       "url": "https://www.youtube.com/watch?v=3JZ_D3ELwOQ",
-       "withLink":false,
-       "params": [""]
+       "name": "weather_forcast",
+       "url": "https://api.data.gov.sg/v1/environment/2-hour-weather-forecast",
+       "interval": 10
     }
 ]
