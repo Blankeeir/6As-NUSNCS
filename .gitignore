@@ -4,3 +4,4 @@
 *.pycpython_api.py
 *.pyc
 *.env
+data/dynamic/*
