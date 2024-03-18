@@ -1,6 +1,6 @@
 ### This py implements assistant api
 from openai import OpenAI
-from ChatCompletion import *
+from chatCompletion import ChatCompletion
 
 #### If request manually:
 '''import requests
