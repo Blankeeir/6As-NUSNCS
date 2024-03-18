@@ -7,7 +7,7 @@ import requests
 import json
 import os
 import concurrent.futures
-import dotenv 
+import openai
 from dotenv import load_dotenv
 
 load_dotenv()
