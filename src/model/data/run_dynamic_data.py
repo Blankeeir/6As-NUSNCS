@@ -26,11 +26,13 @@ def requestAndWriteToFile(url, file_name, relative_file_path, withLink=False):
         res = requests.get(link, headers=_headers)
     with open(file_path, 'w') as file:
         json.dump(res.json(), file)
+
 apiMock = {
     "interval": 10,
     "url": "https://api.data.gov.sg/v1/environment/2-hour-weather-forecast",
     "name": "rainfall"
 }
+
 #requestAndWriteToFile('https://api.data.gov.sg/v1/environment/2-hour-weather-forecast', 'rainfall.json', 'data/dynamic/rainfall')
 
 def update(api):
@@ -52,12 +54,3 @@ def update(api):
     t = threading.Thread(target=temp)
     threads.append(t)
     t.start()
-
-apis = None
-with open("data/dynamic/apis.json", 'r') as file:
-    apis = json.load(file)
-update(apiMock)
-'''
-for api in apis:
-    update(api)
-'''

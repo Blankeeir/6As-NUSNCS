@@ -38,8 +38,9 @@ if __name__ == '__main__':
     while 1:
         input_s = input('user input: ')
         res = requestor.post_request(input_s)
+        print(res)
 
-        response = res.json()['choices'][0]['message']['content']
+        response = res
 
         if  response:
             requestor.context_handler.append_cur_to_context(response,tag=1)
