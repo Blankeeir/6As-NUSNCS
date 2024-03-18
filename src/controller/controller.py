@@ -3,6 +3,8 @@ import json
 
 from model.data.run_dynamic_data import update
 from model.OpenAiModel.openai_request import OpenAI_Request
+from model.OpenAiModel.openAiRequest import MODEL
+from model.OpenAiModel.chatCompletion import ChatCompletion
 
 class Controller:
     def __init__(self):
@@ -74,3 +76,8 @@ class Controller:
 
 
     # Functions to fine tune the model with the given static & real-time data
+
+
+    def get_openai_res(self,prompt):
+        print(ChatCompletion(MODEL).get_chat_response(prompt))
+
