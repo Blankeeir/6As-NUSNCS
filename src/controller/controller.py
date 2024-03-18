@@ -2,7 +2,7 @@ import os
 import json
 
 from model.data.run_dynamic_data import update
-from model.openai.openai_request import OpenAI_Request
+from model.OpenAiModel.openai_request import OpenAI_Request
 
 class Controller:
     def __init__(self):

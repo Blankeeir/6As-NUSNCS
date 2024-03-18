@@ -1,5 +1,6 @@
 import requests
 import json
+import OpenAiModel
 
 class OpenAI_Request(object):
 

@@ -2,8 +2,8 @@ from typing_extensions import override
 from openai import AssistantEventHandler
 from ChatCompletion import *
 from chatgtAssisstant import *
-
-
+import OpenAiModel
+import requests
 
 # First, we create a EventHandler class to define
 # how we want to handle the events in the response stream.
