@@ -1,15 +1,20 @@
-import openai
 import os
-os.environ["OPENAI_API_KEY"] = ""
+from openai import OpenAI
+import asyncio
+from openai import AsyncOpenAI
 
 
-
-response = openai.ChatCompletion.create(
-  model="gpt-4-general",
-  messages=[
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": "Who won the world series in 2020?"},
-    ]
+client = OpenAI(
+    # This is the default and can be omitted
+    api_key=os.environ.get("OPENAI_API_KEY")  # REPLACE WITH your api key
 )
 
-print(response['choices'][0]['message']['content'])
+chat_completion = client.chat.completions.create(
+    messages=[
+        {
+            "role": "user",
+            "content": "Say this is a test",
+        }
+    ],
+    model="gptModel",
+)
