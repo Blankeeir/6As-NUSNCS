@@ -1,16 +1,12 @@
 import datetime
-from web_api.dialogue_api import dialogue_api_handler
-from flask import Flask, render_template
-from flask_restful import Resource, Api, reqparse
-from flask_cors import CORS
 import requests
 import json
 import os
 import concurrent.futures
-import openai
 from dotenv import load_dotenv
 
 load_dotenv()
+
 AccountKey = os.getenv("ACCOUNT_KEY")
 accept = 'application/json'
 _headers = {'AccountKey': AccountKey, 'accept': accept}
@@ -33,15 +29,15 @@ def requestAndWriteToFile(url, file_name, relative_file_path):
         json.dump(res.json(), file)
 
 def process_date(date):
-    relative_file_path = 'data/static/rainfall/' + date.strftime('%Y/%m')
+    relative_file_path = '../../../data/static/rainfall/' + date.strftime('%Y/%m')
     requestAndWriteToFile(rainfallUrl, date.strftime('%d.json'), relative_file_path)
 def getTrafficFlow():
-    relative_file_path = 'data/static/traffic_flow'
+    relative_file_path = '../../../data/static/traffic_flow'
     res = requests.get(trafficFlowUrl, headers=_headers)
     link = res.json()['value'][0]['Link']
     requestAndWriteToFile(link, 'traffic_flow.json', relative_file_path)
 def getERPRate():
-    relative_file_path = 'data/static/erp_rate'
+    relative_file_path = '../../../data/static/erp_rate'
     requestAndWriteToFile(ERPRateUrl, 'erp_rate.json', relative_file_path)
 # Use concurrent.futures to run the process_date function in parallel
 with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -53,10 +49,10 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
 
     # Submit the process_date function for each date to the executor
     results = [executor.submit(process_date, date) for date in dates]
-    executor.submit(getTrafficFlow)
-    executor.submit(getERPRate)
+    #results = []
+    results.append(executor.submit(getTrafficFlow))
+    results.append(executor.submit(getERPRate))
 
     # Wait for all tasks to complete
-    concurrent.futures.wait(results)
-
+    concurrent.futures.wait([executor.submit(getERPRate)])
 print("done")
