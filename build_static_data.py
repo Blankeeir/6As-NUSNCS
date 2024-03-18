@@ -7,6 +7,7 @@ import requests
 import json
 import os
 import concurrent.futures
+import dotenv 
 from dotenv import load_dotenv
 
 load_dotenv()
