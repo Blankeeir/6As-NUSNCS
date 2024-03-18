@@ -1,9 +1,12 @@
 import requests
 import json
-from ChatCompletion import ChatCompletion
+from chatCompletion import ChatCompletion
+from CountTokens import num_tokens_from_messages
+
+MODEL = "gpt-3.5-turbo"
 
 if __name__ == '__main__':
-    requestor = ChatCompletion("gpt-4")
+    requestor = ChatCompletion(MODEL)
 
     while 1:
         input_s = input('user input: ')
@@ -13,4 +16,7 @@ if __name__ == '__main__':
         response = res
 
         print(f"chatGPT: {response}")
+
+        # To get number of tokens
+        # print(num_tokens_from_messages(messages, MODEL))
 

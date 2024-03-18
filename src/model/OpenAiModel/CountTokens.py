@@ -2,7 +2,7 @@ import tiktoken
 import openai
 import OpenAiModel
 
-def num_tokens_from_messages(messages, model="gpt-3.5-turbo-0613"):
+def num_tokens_from_messages(messages, model="gpt-4"):
     """Return the number of tokens used by a list of messages."""
     try:
         encoding = tiktoken.encoding_for_model(model)
@@ -76,7 +76,9 @@ example_messages = [
     },
 ]
 
-for model in [
+
+### testing
+'''for model in [
     # "gpt-3.5-turbo-0301",
     # "gpt-4-0314",
     # "gpt-4-0613",
@@ -95,5 +97,5 @@ for model in [
     max_tokens=1)
     token = response.usage.prompt_tokens
     print(f'{token} prompt tokens counted by the OpenAI API.')
-    print()
+    print()'''
 
