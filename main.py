@@ -1,11 +1,5 @@
 import asyncio
-import os
-import time
-import json
-import threading
 
-from dotenv import load_dotenv
-import requests
 from controller.controller import Controller
 from web_api.dialogue_api import dialogue_api_handler
 from flask import Flask, render_template

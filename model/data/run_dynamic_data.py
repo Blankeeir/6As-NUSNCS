@@ -37,7 +37,7 @@ def update(api):
     interval = api['interval']
     url = api['url']
     file_name = api['name'] + '.json'
-    relative_file_path = "../../../data/dynamic/" + api['name']
+    relative_file_path = "data/dynamic/" + api['name']
     withLink = False
     if 'withLink' in api:
         withLink = api['withLink']
@@ -54,7 +54,7 @@ def update(api):
     t.start()
 
 apis = None
-with open("../../../data/dynamic/apis.json", 'r') as file:
+with open("data/dynamic/apis.json", 'r') as file:
     apis = json.load(file)
 
 for api in apis:
