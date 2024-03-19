@@ -1,8 +1,7 @@
 import requests
 import json
 from chatCompletion import *
-from CountTokens import *
-from dynamicPricing import *
+from model.OpenAiModel.assistant import *
 
 
 

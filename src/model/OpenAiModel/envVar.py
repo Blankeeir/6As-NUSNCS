@@ -5,7 +5,14 @@ load_dotenv('.env.dev')
 
 ### Finetune using clear instructions:
     #https://platform.openai.com/docs/guides/prompt-engineering/strategy-write-clear-instructions
-MODEL = "gpt-4-1106-preview"
+
+##
+##perform finetuning job here for model
+fine_tuned_model = "gpt-4-1106-preview"
+
+
+
+MODEL = fine_tuned_model
 
 CLIENT = OpenAI(
             api_key=os.environ.get("OPENAI_API_KEY")  # see .env

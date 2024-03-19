@@ -3,7 +3,7 @@ import json
 
 from model.data.run_dynamic_data import update
 from model.OpenAiModel.chatCompletion import *
-
+from model.OpenAiModel.assistant import *
 
 class Controller:
     def __init__(self):
@@ -56,6 +56,15 @@ class Controller:
     # Functions to get the AI Model's response data from ../model/openai folder
 
 
-    def get_ai_res(self,prompt):
-        return ChatCompletion(MODEL).get_chat_response(prompt)
+
+    def get_chat_res(self,prompt):
+        ChatCompletion().get_chat_response(prompt)
+
+    def get_assistant_res(self, prompt):
+        thread = client.beta.threads.create()
+
+        ## create several assistants for different purposes 
+        pricingAssistant = Assistant()
+
+        return pricingAssistant.get_assistant_response(prompt)
 

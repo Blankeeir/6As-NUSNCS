@@ -2,8 +2,7 @@
 from openai import OpenAI
 import os
 import json
-
-from finetune import *
+from model.OpenAiModel.envVar import *
 
 
 
@@ -31,7 +30,7 @@ class ChatCompletion(object):
                 },
                 {
                     "role": "assistant",
-                    "content": ASSISSTANT
+                    "content": EXAMPLE
                 }
             ],
 

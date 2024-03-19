@@ -4,13 +4,20 @@ from envVar import *
 from imageGeneration import *
 from eventHandler import *
 
+
+#### assisstants are for data feeds 
+# assistant list: decoder assistant & pricing model assistant &  
 ### This py implements assistant api
+
 client = CLIENT
+
+
+### specify assistant file ids here
+
+
+
 class Assistant:
-    def __init__(self):
-        self.client = client
-
-
+    def __init__(self, fileids):
         ### upload file for this assistant
         self.file = self.client.files.create(
             file=open("data/static/ERP Rates.json", "rb"),
@@ -43,7 +50,7 @@ class Assistant:
 
     def run(self):
         with self.client.beta.threads.runs.create_and_stream(
-                thread_id=self.thread.id,
+                thread_id = thread.id,
                 assistant_id=self.assistant.id,
                 instructions=ASSISSTANT_INSTRUCTION,
                 event_handler=EventHandler(),
