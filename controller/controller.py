@@ -62,8 +62,17 @@ class Controller:
             f"{input}"
         return self.get_ai_res(prompt)
 
-    def post_accident_bot_res(self):
-        return "POST ACCIDENT BOT RES"
+    def post_accident_bot_res(self, prompt):
+        accident_description = prompt
+        location = self.parse_input(prompt)
+        prompt = f"I am at this location: "
+        prompt += location + "\n"
+        prompt += f"I just had an vehicular accident, "
+        prompt += accident_description + "\n"
+        prompt += f"please recommend me on the best medical advice"\
+            f"and legal advice given my current situation"
+
+        return self.get_ai_res(prompt)
 
     def route_planner_res(self, prompt, choices):
         location = self.parse_input(prompt)
