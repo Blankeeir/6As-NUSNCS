@@ -1,10 +1,10 @@
 import os
 import json
 
-from model.data.run_dynamic_data import update
-from model.OpenAiModel.openai_request import OpenAI_Request
-from model.OpenAiModel.openAiRequest import MODEL
-from model.OpenAiModel.chatCompletion import ChatCompletion
+from Model.data.run_dynamic_data import update
+from Model.OpenAiModel.openai_request import OpenAI_Request
+from Model.OpenAiModel.OpenAiRequest import MODEL
+from Model.OpenAiModel.ChatCompletion import ChatCompletion
 
 class Controller:
     def __init__(self):
