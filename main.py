@@ -1,7 +1,7 @@
 from controller.controller import Controller
 from web_api.dialogue_api import dialogue_api_handler
 from flask import Flask, render_template
-from flask_restful import Resource, Api, reqparse
+from flask_restful import Api, reqparse
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -31,11 +31,13 @@ def echo():
     user_request_input = args['user_input']
     return respond(user_request_input)
 
-@app.route("/chat")
+@app.route("/chat", methods=['POST'])
 def chat():
     userInput = parser.parse_args()['user_input']
     if userInput:
-        return respond(MainController.get_ai_res(userInput)), 200
+        res = MainController.get_ai_res(userInput)
+        print(res)
+        return respond(res)
     return respond("No input"), 400
 
 @app.route("/post_accident", methods=['POST'])

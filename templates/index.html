@@ -62,8 +62,8 @@
 <body>
     <div class="container">
         <div class="left-section">
-            <textarea class="output-field" placeholder="Output Field"></textarea>
-            <input type="text" class="input-field" placeholder="Input Field">
+            <textarea id="outputField" class="output-field" placeholder="Output Field"></textarea>
+            <input id="inputField" type="text" class="input-field" placeholder="Input Field">
         </div>
         <div class="right-section">
             <div class="checkbox-options">
@@ -71,8 +71,31 @@
                 <label><input type="checkbox"> Option 2</label><br>
                 <label><input type="checkbox"> Option 3</label>
             </div>
-            <button class="enter-button">Enter</button>
+            <button id="submitButton" class="enter-button">Enter</button>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script>
+        document.getElementById('submitButton').addEventListener('click', function() {
+            const userInput = document.getElementById('inputField').value;
+            const requestData = { "user_input": userInput };
+            const url = 'http://localhost:80/chat';
+            function sendRequest() {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: JSON.stringify(requestData),
+                    contentType: 'application/json',
+                    success: function(data) {
+                        document.getElementById('outputField').value = data.res;
+                        console.log(data);
+                    },
+                    error: function(xhr, status, error) {
+                    console.log(error);
+                     }
+                });
+                }
+                sendRequest();});
+    </script>
 </body>
 </html>
