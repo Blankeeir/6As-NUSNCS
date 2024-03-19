@@ -2,7 +2,7 @@ import json
 
 from model.OpenAiModel.ChatCompletion import ChatCompletion
 from model.OpenAiModel.OpenAiRequest import MODEL
-from model.data.run_dynamic_data import update
+from model.data.run_dynamic_data import update # do not remove
 
 class Controller:
     # Functions to get the static data from ../../data folder
