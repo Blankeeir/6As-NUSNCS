@@ -11,20 +11,14 @@ class Controller:
         pass
 
     # Functions to get the static data from ../../data folder
-    def get_static_data(self):
-        file_paths = [
-            "data/static/rainfall/2023/03/15.json",
-            "data/static/Traffic Flow.json",
-            "data/static/erp_rate/erp_rate.json"
-        ]
-        for file_path in file_paths:
-            try:
-                with open(file_path, 'r') as file:
-                    data = json.load(file)
-                    print(data)
-            except Exception as e:
-                print(f"Error loading file {file_path}: {e}")
-                continue
+    async def get_static_data(self, file_path):
+        try:
+            with open(file_path, 'r') as file:
+                data = json.load(file)
+                print(data)
+        except Exception as e:
+            print(f"Error loading file {file_path}: {e}")
+            return None
 
     # Functions to get the inputs from the website (api endpoint, get inputs as JSON)
     # Inputs are as such: {
@@ -43,7 +37,7 @@ class Controller:
     #}
 
     # Functions to get the real time data from ../model/data folder
-    def get_real_time_data(self):
+    async def get_real_time_data(self):
         apis = None
         with open("data/dynamic/apis.json", 'r') as file:
             apis = json.load(file)
