@@ -3,7 +3,7 @@ from openai import OpenAI
 from chatCompletion import *
 from finetune import *
 from imageGeneration import *
-from dynamicPricing import *
+from eventHandler import *
 
 ### instantiate an assistant
 client = CLIENT
@@ -25,8 +25,17 @@ def addMessage(role, content):
     content = content
     )
 
-    print(message)
+    #print(message)
     
+with client.beta.threads.runs.create_and_stream(
+  thread_id= thread.id,
+  assistant_id= assistant.id,
+  instructions="Please address the user as Jane Doe. The user has a premium account.",
+  event_handler= EventHandler(),
+
+) as stream:
+  stream.until_done()
 
 
-addMessage("user", "hello")
+if __name__ == '__main__':
+    addMessage("user", "hello")
