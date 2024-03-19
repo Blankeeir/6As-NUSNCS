@@ -2,13 +2,10 @@
 from openai import OpenAI
 import os
 import json
-from dotenv import load_dotenv
-from finetune import *
-from assisstant import *
-from dynamicPricing import *
-from eventHandler import *
 
-load_dotenv('.env.dev')
+from finetune import *
+
+
 
 class ChatCompletion(object):
     def __init__(self):
@@ -55,8 +52,8 @@ class ChatCompletion(object):
         return res
 
 
-#test = ChatCompletion()
-#print(test.get_chat_response("haha"))
+test = ChatCompletion()
+print(test.get_chat_response("haha"))
 ## save time by streaming the response
 ## https://beta.openai.com/docs/guides/streaming/
 

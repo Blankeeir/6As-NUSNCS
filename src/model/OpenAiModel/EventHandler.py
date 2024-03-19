@@ -1,9 +1,7 @@
 from typing_extensions import override
 from openai import AssistantEventHandler
 from chatCompletion import *
-from chatgtAssisstant import *
-import OpenAiModel
-import requests
+from assisstant import *
 
 # First, we create a EventHandler class to define
 # how we want to handle the events in the response stream.
@@ -38,6 +36,6 @@ with client.beta.threads.runs.create_and_stream(
   thread_id=thread.id,
   assistant_id=assistant.id,
   instructions="Please address the user as Jane Doe. The user has a premium account.",
-  event_handler=EventHandler(),
+  event_handler= EventHandler(),
 ) as stream:
   stream.until_done()
