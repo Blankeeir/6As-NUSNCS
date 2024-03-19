@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Split Layout</title>
+<style>
+    body, html {
+        height: 100%;
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        display: flex;
+        height: 100%;
+    }
+
+    .left-section {
+        flex: 70%;
+        padding: 20px;
+    }
+
+    .right-section {
+        flex: 30%;
+        padding: 20px;
+        border-left: 1px solid #ccc;
+    }
+
+    .input-field {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+    }
+
+    .output-field {
+        width: 100%;
+        height: 200px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        overflow-y: auto;
+    }
+
+    .checkbox-options {
+        margin-bottom: 10px;
+    }
+
+    .enter-button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+
+    .enter-button:hover {
+        background-color: #0056b3;
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-section">
+            <textarea class="output-field" placeholder="Output Field"></textarea>
+            <input type="text" class="input-field" placeholder="Input Field">
+        </div>
+        <div class="right-section">
+            <div class="checkbox-options">
+                <label><input type="checkbox"> Option 1</label><br>
+                <label><input type="checkbox"> Option 2</label><br>
+                <label><input type="checkbox"> Option 3</label>
+            </div>
+            <button class="enter-button">Enter</button>
+        </div>
+    </div>
+</body>
+</html>

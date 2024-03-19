@@ -17,6 +17,10 @@ parser.add_argument('user_input',type=str,location='json')
 def respond(res):
     return {'code':0,'message':'success','res':res}
 
+@app.route("/")
+def index():
+    return render_template("index.html")
+
 @app.route("/ping")
 def ping():
     return "Pong"
@@ -30,4 +34,5 @@ def echo():
 MainController.get_ai_res("Hi what is your name?")
 
 if __name__ == '__main__':
+    print("Starting server on port :80")
     app.run(host='0.0.0.0', port=80, debug=True)
