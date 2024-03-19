@@ -65,7 +65,8 @@ class Controller:
     def post_accident_bot_res(self):
         return "POST ACCIDENT BOT RES"
 
-    def route_planner_res(self):
+    def route_planner_res(self, prompt, choices):
+        location = self.parse_input(prompt)
         return "POST ACCIDENT BOT"
 
     def route_info_res(self):
