@@ -10,13 +10,13 @@ from dynamicPricing import *
 class Assisstant(object):
     def __init__(self, assistant_name):
         super().__init__()
-        client = CLIENT
+        self.client = CLIENT
         self.name = assistant_name
-        self.thread = client.beta.threads.create()
-        self.assistant = client.beta.assistants.create(
+        self.thread = CLIENT.beta.threads.create()
+        self.assistant = CLIENT.beta.assistants.create(
         name="testing assistant",
         instructions="user instructions here",
-        tools=[{"type": "code_interpreter"}],
+        tools = TOOLS,
         model="gpt-4-turbo-preview",
         )   
 
@@ -28,7 +28,7 @@ class Assisstant(object):
         thread_id = self.thread.id,
         role = role,
         content = message
-    )
+        )
     
     
 
