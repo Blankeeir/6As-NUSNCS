@@ -31,7 +31,12 @@ def echo():
     user_request_input = args['user_input']
     return respond(user_request_input)
 
-MainController.get_ai_res("Hi what is your name?")
+@app.route("/chat")
+def chat():
+    userInput = parser.parse_args()['user_input']
+    if userInput:
+        return respond(MainController.get_ai_res(userInput)), 200
+    return respond("No input"), 400
 
 if __name__ == '__main__':
     print("Starting server on port :80")

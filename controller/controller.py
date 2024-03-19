@@ -35,7 +35,7 @@ class Controller:
 
         
     def get_ai_res(self,prompt):
-        print(ChatCompletion(MODEL).get_chat_response(prompt))
+        return ChatCompletion(MODEL).get_chat_response(prompt)
 
         # for api in apis:
         #     update(api)
