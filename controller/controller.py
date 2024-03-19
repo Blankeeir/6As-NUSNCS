@@ -40,9 +40,6 @@ class Controller:
     def get_ai_res(self, prompt):
         return ChatCompletion(MODEL).get_chat_response(prompt)
 
-        # for api in apis:
-        #     update(api)
-
     def parse_input(self, input) -> str:
         """
         This function takes an input string and constructs a prompt for the AI model. 
@@ -65,18 +62,17 @@ class Controller:
             f"{input}"
         return self.get_ai_res(prompt)
 
+    def post_accident_bot_res(self):
+        return "POST ACCIDENT BOT RES"
 
-'''
-    # Functions to get the AI Model's response data from ../model/openai folder
-    def get_ai_res(self, prompt):
-        keys = "OpenAI API keys"
-        model_name = "gpt-3.5-turbo"
-        request_address = "https://api.openai.com/v1/chat/completions"
-        requestor = OpenAI_Request(keys,model_name,request_address)
+    def route_planner_res(self):
+        return "POST ACCIDENT BOT"
 
-        res = requestor.post_request(prompt)
+    def route_info_res(self):
+        return "POST ACCIDENT"
         
-        # if error
-        if res.status_code != 200:
-            print({"response": "Error: " + res.text})
-        print( {"response": res.json()['choices'][0]['message']['content']})'''
+    def get_ai_res(self,prompt):
+        return ChatCompletion(MODEL).get_chat_response(prompt)
+
+    # Functions to fine tune the model with the given static & real-time data
+

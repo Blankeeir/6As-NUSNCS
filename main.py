@@ -38,6 +38,27 @@ def chat():
         return respond(MainController.get_ai_res(userInput)), 200
     return respond("No input"), 400
 
+@app.route("/post_accident", methods=['POST'])
+def post_accident():
+    userInput = parser.parse_args()['user_input']
+    if userInput:
+        return respond(MainController.post_accident_bot_res()), 200
+    return respond("No input"), 400
+
+@app.route("/route_planner", methods=['POST'])
+def post_accident():
+    userInput = parser.parse_args()['user_input']
+    if userInput:
+        return respond(MainController.route_planner_res()), 200
+    return respond("No input"), 400
+
+@app.route("/route_info", methods=['POST'])
+def post_accident():
+    userInput = parser.parse_args()['user_input']
+    if userInput:
+        return respond(MainController.route_info_res()), 200
+    return respond("No input"), 400
+
 if __name__ == '__main__':
     print("Starting server on port :80")
     app.run(host='0.0.0.0', port=80, debug=True)
