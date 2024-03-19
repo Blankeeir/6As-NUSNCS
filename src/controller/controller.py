@@ -50,10 +50,14 @@ class Controller:
 
         update(apiMock)
 
+        
+    def get_ai_res(self,prompt):
+        print(ChatCompletion(MODEL).get_chat_response(prompt))
+
         # for api in apis:
         #     update(api)
 
-
+'''
     # Functions to get the AI Model's response data from ../model/openai folder
     def get_ai_res(self, prompt):
         keys = "OpenAI API keys"
@@ -66,12 +70,9 @@ class Controller:
         # if error
         if res.status_code != 200:
             print({"response": "Error: " + res.text})
-        print( {"response": res.json()['choices'][0]['message']['content']})
+        print( {"response": res.json()['choices'][0]['message']['content']})'''
 
 
     # Functions to fine tune the model with the given static & real-time data
-
-
-    def get_openai_res(self,prompt):
-        print(ChatCompletion(MODEL).get_chat_response(prompt))
+    
 
