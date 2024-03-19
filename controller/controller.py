@@ -6,7 +6,7 @@ from model.data.run_dynamic_data import update
 
 class Controller:
     # Functions to get the static data from ../../data folder
-    async def get_static_data(self, file_path):
+    def get_static_data(self, file_path):
         try:
             with open(file_path, 'r') as file:
                 data = json.load(file)
@@ -32,18 +32,6 @@ class Controller:
     #}
 
     # Functions to get the real time data from ../model/data folder
-    async def get_real_time_data(self):
-        apis = None
-        with open("data/dynamic/apis.json", 'r') as file:
-            apis = json.load(file)
-        
-        apiMock = {
-            "interval": 10,
-            "url": "https://api.data.gov.sg/v1/environment/2-hour-weather-forecast",
-            "name": "rainfall"
-        }
-
-        update(apiMock)
 
         
     def get_ai_res(self,prompt):
