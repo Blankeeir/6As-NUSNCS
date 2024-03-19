@@ -1,5 +1,5 @@
 from config.chatgpt_config import config_dict
-from Model.openai.openai_request import OpenAI_Request
+from model.OpenAiModel.openai_request import OpenAI_Request
 
 from tools.cfg_wrapper import load_config
 from tools.context import ContextHandler
@@ -15,6 +15,7 @@ class dialogue_api_handler(object):
 
         # load config
         config = load_config(config_dict)
+        print(config)
         keys = config.Acess_config.authorization
         model_name = config.Model_config.model_name
         request_address = config.Model_config.request_address
