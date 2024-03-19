@@ -6,9 +6,6 @@ from model.data.run_dynamic_data import update
 
 
 class Controller:
-    def __init__(self):
-        pass
-
     # Functions to get the static data from ../../data folder
     async def get_static_data(self, file_path):
         try:

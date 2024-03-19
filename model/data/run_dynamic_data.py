@@ -1,8 +1,6 @@
 import os
 import time
 import json
-import time
-import json
 import threading
 
 from dotenv import load_dotenv
