@@ -2,7 +2,7 @@
 from openai import OpenAI
 import os
 import json
-from model.OpenAiModel.envVar import *
+from envVar import *
 
 
 

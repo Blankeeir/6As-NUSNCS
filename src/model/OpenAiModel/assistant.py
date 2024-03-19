@@ -42,16 +42,17 @@ class Assistant:
         )
 
     def addMessage(self, role, content):
-        message = self.client.beta.threads.messages.create(
-            thread_id=self.thread.id,
-            role=role,
-            content=content
+        message = client.beta.threads.messages.create(
+            thread_id =self.thread.id,
+            role = role,
+            content = content,
+            file_id = self.file_ids
         )
 
     def run(self):
         with self.client.beta.threads.runs.create_and_stream(
-                thread_id = thread.id,
-                assistant_id=self.assistant.id,
+                thread_id = self.thread.id,
+                assistant_id = self.assistant.id,
                 instructions=ASSISSTANT_INSTRUCTION,
                 event_handler=EventHandler(),
         ) as stream:
