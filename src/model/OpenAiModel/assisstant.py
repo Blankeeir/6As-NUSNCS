@@ -23,10 +23,12 @@ class Assisstant(object):
 
 
             ### assisstant create user message
-    def createMessage(self, message):
+    def addMessage(self, role, message):
         message = self.client.beta.threads.messages.create(
         thread_id = self.thread.id,
-        role ="user",
+        role = role,
         content = message
     )
+    
+    
 
