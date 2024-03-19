@@ -31,11 +31,12 @@ class EventHandler(AssistantEventHandler):
 # Then, we use the `create_and_stream` SDK helper 
 # with the `EventHandler` class to create the Run 
 # and stream the response.
- 
+'''
 with client.beta.threads.runs.create_and_stream(
-  thread_id=thread.id,
-  assistant_id=assistant.id,
+  thread_id= thread.id,
+  assistant_id= assistant.id,
   instructions="Please address the user as Jane Doe. The user has a premium account.",
   event_handler= EventHandler(),
 ) as stream:
   stream.until_done()
+  '''
