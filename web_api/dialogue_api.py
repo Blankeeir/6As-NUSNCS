@@ -1,5 +1,5 @@
 from config.chatgpt_config import config_dict
-from src.Model.openai.openai_request import OpenAI_Request
+from Model.openai.openai_request import OpenAI_Request
 
 from tools.cfg_wrapper import load_config
 from tools.context import ContextHandler
