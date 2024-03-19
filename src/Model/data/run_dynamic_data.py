@@ -56,8 +56,6 @@ def update(api):
 apis = None
 with open("../../../data/dynamic/apis.json", 'r') as file:
     apis = json.load(file)
-update(apiMock)
-'''
+
 for api in apis:
     update(api)
-'''

@@ -7,6 +7,9 @@ app = Flask(__name__)
 api = Api(app)
 CORS(app)
 
+
+
+
 dialogue_api_hl = dialogue_api_handler()
 
 parser = reqparse.RequestParser()
@@ -22,7 +25,7 @@ def chat(query):
     except Exception as e:
         return {'code':1,'message':'fail','res':'!!! The api call is abnormal, please check the backend log'}
 
-#print(chat("hello"))
+print(chat("hello"))
 
 @app.route("/ping")
 def ping():
@@ -33,6 +36,7 @@ def echo():
     args = parser.parse_args()
     user_request_input = args['user_input']
     return respond(user_request_input)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=80,debug=True)

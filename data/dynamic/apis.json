@@ -2,6 +2,43 @@
     {
        "name": "weather_forcast",
        "url": "https://api.data.gov.sg/v1/environment/2-hour-weather-forecast",
-       "interval": 10
+       "interval": 600
+    },
+    {
+        "name": "traffic_advisory",
+        "url": "http://datamall2.mytransport.sg/ltaodataservice/VMS",
+        "interval": 120
+    },
+    {
+        "name": "traffic_speed_band",
+        "url": "http://datamall2.mytransport.sg/ltaodataservice/v3/TrafficSpeedBands",
+        "interval": 300
+    },
+    {
+        "name": "traffic_incidents",
+        "url": "http://datamall2.mytransport.sg/ltaodataservice/TrafficIncidents",
+        "interval": 120
+    },
+    {
+        "name": "traffic_images",
+        "url": "http://datamall2.mytransport.sg/ltaodataservice/Traffic-Imagesv2",
+        "interval": 300,
+        "myNote": "only contains links"
+    },
+    {
+        "name": "estimated_travel_time",
+        "url": "http://datamall2.mytransport.sg/ltaodataservice/EstTravelTimes",
+        "interval": 300
+    },
+    {
+        "name": "carpark_availability",
+        "url": "http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2",
+        "interval": 60
+    }, 
+    {
+        "name": "taxi_availability",
+        "url": "http://datamall2.mytransport.sg/ltaodataservice/Taxi-Availability",
+        "interval": 60
     }
+
 ]
