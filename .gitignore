@@ -4,5 +4,6 @@
 *.pycpython_api.py
 *.pyc
 *.env
+*.env.*
 data/dynamic/*
 !data/dynamic/apis.json
