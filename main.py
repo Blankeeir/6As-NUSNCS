@@ -44,22 +44,22 @@ def chat():
 def post_accident():
     userInput = parser.parse_args()['user_input']
     if userInput:
-        return respond(MainController.post_accident_bot_res()), 200
-    return respond("No input"), 400
+        return respond(MainController.post_accident_bot_res(userInput))
+    return respond("No input")
 
 @app.route("/route_planner", methods=['POST'])
-def post_accident():
+def route_planner():
     userInput = parser.parse_args()['user_input']
     if userInput:
-        return respond(MainController.route_planner_res()), 200
-    return respond("No input"), 400
+        return respond(MainController.route_planner_res(userInput))
+    return respond("No input")
 
 @app.route("/route_info", methods=['POST'])
-def post_accident():
+def route_info():
     userInput = parser.parse_args()['user_input']
     if userInput:
-        return respond(MainController.route_info_res()), 200
-    return respond("No input"), 400
+        return respond(MainController.route_info_res())
+    return respond("No input")
 
 if __name__ == '__main__':
     print("Starting server on port :80")
