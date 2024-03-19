@@ -8,7 +8,6 @@ load_dotenv('.env.dev')
 MODEL = "gpt-4-1106-preview"
 
 CLIENT = OpenAI(
-            # This is the default and can be omitted
             api_key=os.environ.get("OPENAI_API_KEY")  # see .env
         )
 
