@@ -3,17 +3,18 @@ from openai import OpenAI
 import os
 import json
 from dotenv import load_dotenv
-from finetune import SYSTEM, ASSISSTANT, MODEL, USER
+from finetune import *
+from assisstant import *
+from dynamicPricing import *
+from eventHandler import *
+
 load_dotenv('.env.dev')
 
 class ChatCompletion(object):
     def __init__(self):
         super().__init__()
         self.model_name = MODEL
-        self.client = OpenAI(
-            # This is the default and can be omitted
-            api_key=os.environ.get("OPENAI_API_KEY")  # see .env
-        )
+        self.client = CLIENT
 
     def get_chat_response(self, message):
 
