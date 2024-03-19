@@ -52,8 +52,7 @@ class ChatCompletion(object):
         return res
 
 
-test = ChatCompletion()
-print(test.get_chat_response("haha"))
+
 ## save time by streaming the response
 ## https://beta.openai.com/docs/guides/streaming/
 
