@@ -74,6 +74,13 @@ class Controller:
 
         return self.get_ai_res(prompt)
 
+    def greetings(self):
+        greetings = f"Hello there! I'm TransportGPT, I have 3 versions of myself:\n"\
+                f"1. I can help you with legal and medical advice using the latest data in a vehicular accident\n"\
+                f"2. I can help you plan a route given your current start and end location given your preferences on ERP, weather conditions and eco-friendliness\n"\
+                f"3. I can give you some route information to aide you in your travels.\n"
+        return greetings
+
     def route_planner_res(self, prompt, choices):
         location = self.parse_input(prompt)
         return "POST ACCIDENT BOT"
