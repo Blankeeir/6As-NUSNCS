@@ -1,7 +1,6 @@
 import requests
 import json
-from chatCompletion import ChatCompletion
-from CountTokens import num_tokens_from_messages
+from model.OpenAiModel.ChatCompletion import ChatCompletion
 
 MODEL = "gpt-3.5-turbo"
 

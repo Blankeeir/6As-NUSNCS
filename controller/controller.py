@@ -1,15 +1,10 @@
-import os
 import json
 
-from Model.data.run_dynamic_data import update
-from Model.OpenAiModel.openai_request import OpenAI_Request
-from Model.OpenAiModel.OpenAiRequest import MODEL
-from Model.OpenAiModel.ChatCompletion import ChatCompletion
+from model.OpenAiModel.ChatCompletion import ChatCompletion
+from model.OpenAiModel.OpenAiRequest import MODEL
+from model.data.run_dynamic_data import update
 
 class Controller:
-    def __init__(self):
-        pass
-
     # Functions to get the static data from ../../data folder
     async def get_static_data(self, file_path):
         try:
@@ -50,10 +45,14 @@ class Controller:
 
         update(apiMock)
 
+        
+    def get_ai_res(self,prompt):
+        print(ChatCompletion(MODEL).get_chat_response(prompt))
+
         # for api in apis:
         #     update(api)
 
-
+'''
     # Functions to get the AI Model's response data from ../model/openai folder
     def get_ai_res(self, prompt):
         keys = "OpenAI API keys"
@@ -66,12 +65,9 @@ class Controller:
         # if error
         if res.status_code != 200:
             print({"response": "Error: " + res.text})
-        print( {"response": res.json()['choices'][0]['message']['content']})
+        print( {"response": res.json()['choices'][0]['message']['content']})'''
 
 
     # Functions to fine tune the model with the given static & real-time data
-
-
-    def get_openai_res(self,prompt):
-        print(ChatCompletion(MODEL).get_chat_response(prompt))
+    
 
