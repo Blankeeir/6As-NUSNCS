@@ -3,29 +3,42 @@ from openai import OpenAI
 import os
 import json
 from dotenv import load_dotenv
+from finetune import SYSTEM, ASSISSTANT, MODEL, USER
 load_dotenv('.env.dev')
 
 class ChatCompletion(object):
-    def __init__(self, model_name = 'gpt-3.5-turbo'):
+    def __init__(self):
         super().__init__()
-        self.model_name = model_name
+        self.model_name = MODEL
+        self.client = OpenAI(
+            # This is the default and can be omitted
+            api_key=os.environ.get("OPENAI_API_KEY")  # see .env
+        )
 
     def get_chat_response(self, message):
 
         res = ""
 
-        client = OpenAI(
-            # This is the default and can be omitted
-            api_key=os.environ.get("OPENAI_API_KEY")  # see .env
-        )
-
-        response = client.chat.completions.create(
+        response = self.client.chat.completions.create(
             messages=[
                 {
                     "role": "user",  # role: the role of the messenger (either system, user, assistant or tool)
                     "content": message,  # user messages
                 },
+                {
+                    "role": "user",
+                    "content": USER
+                },
+                {
+                    "role": "system",
+                    "content": SYSTEM
+                },
+                {
+                    "role": "assistant",
+                    "content": ASSISSTANT
+                }
             ],
+
             model = self.model_name,
             temperature=0.8,
             n=1,  # how many choices to get
@@ -41,8 +54,8 @@ class ChatCompletion(object):
         return res
 
 
-test = ChatCompletion()
-print(test.get_chat_response("haha"))
+#test = ChatCompletion()
+#print(test.get_chat_response("haha"))
 ## save time by streaming the response
 ## https://beta.openai.com/docs/guides/streaming/
 
