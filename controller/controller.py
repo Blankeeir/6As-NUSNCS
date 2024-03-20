@@ -1,5 +1,6 @@
 import json
 
+from main import client
 from model.OpenAiModel.chat_completion import ChatCompletion
 from model.OpenAiModel.envVar import *
 from model.data.run_dynamic_data import update # do not remove
