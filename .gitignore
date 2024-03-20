@@ -7,3 +7,6 @@
 *.env.*
 data/dynamic/*
 !data/dynamic/apis.json
+model/data/data/dynamic/*
+.env.dev
+
