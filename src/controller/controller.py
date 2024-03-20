@@ -67,7 +67,7 @@ class Controller:
         pricingAssistant = Assistant()
         run = client.beta.threads.runs.create(
         thread_id = thread.id,
-        assistant_id= pricingAssistant.id
+        assistant_id = pricingAssistant.id
 )
 
         return pricingAssistant.get_assistant_response(prompt) + "";
