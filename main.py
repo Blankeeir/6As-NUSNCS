@@ -3,6 +3,9 @@ from web_api.dialogue_api import dialogue_api_handler
 from flask import Flask, render_template
 from flask_restful import Api, reqparse
 from flask_cors import CORS
+from model.OpenAiModel.assistant import *
+from model.OpenAiModel.envVar import *
+
 
 app = Flask(__name__)
 api = Api(app)
@@ -15,13 +18,19 @@ thread1 = client.beta.threads.create()
 thread2 = client.beta.threads.create()
 thread3 = client.beta.threads.create()
 ## create several assistants for different purposes 
-pricingAssistant = Assistant()
-routeAssistant = Assistant()
-postAccidentAssistant = Assistant()
-ecoAssistant = Assistant()
-weatherAssistant = Assistant()
+
+
 parser = reqparse.RequestParser()
 parser.add_argument('user_input',type=str,location='json')
+
+
+
+
+
+
+
+
+
 
 def respond(res):
     return {'code':0,'message':'success','res':res}
@@ -53,21 +62,21 @@ def chat():
 def post_accident():
     userInput = parser.parse_args()['user_input']
     if userInput:
-        return respond(MainController.post_accident_bot_res(userInput))
+        return respond(MainController.post_accident_bot_res(userInput, thread1))
     return respond("No input")
 
 @app.route("/route_planner", methods=['POST'])
 def route_planner():
     userInput = parser.parse_args()['user_input']
     if userInput:
-        return respond(MainController.route_planner_res(userInput))
+        return respond(MainController.route_planner_res(userInput, thread2))
     return respond("No input")
 
 @app.route("/route_info", methods=['POST'])
 def route_info():
     userInput = parser.parse_args()['user_input']
     if userInput:
-        return respond(MainController.route_info_res())
+        return respond(MainController.route_info_res(userInput, thread3))
     return respond("No input")
 
 

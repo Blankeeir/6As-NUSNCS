@@ -1,9 +1,9 @@
 import json
 
 from model.OpenAiModel.chat_completion import ChatCompletion
-from model.OpenAiModel.envVar import MODEL, CLIENT
-from model.OpenAiModel.assistant import Assistant
+from model.OpenAiModel.envVar import *
 from model.data.run_dynamic_data import update # do not remove
+from model.OpenAiModel.event_handler import EventHandler
 from openai import OpenAI
 import googlemaps
 from datetime import datetime
@@ -11,7 +11,6 @@ import os
 client = CLIENT
 
 class Controller:
-    client = OpenAI()
 
     # Functions to get the static data from ../../data folder
     def get_static_data(self, file_path):
@@ -66,7 +65,7 @@ class Controller:
             f"{input}"
         return self.get_ai_res(prompt)
 
-    def post_accident_bot_res(self, prompt):
+    def post_accident_bot_res(self, prompt, thread):
         accident_description = prompt
         location = self.parse_input(prompt)
         loc = location if location else "Singapore"
@@ -76,8 +75,21 @@ class Controller:
         prompt += accident_description + "\n"
         prompt += f"please recommend me on the best medical advice"\
             f"and legal advice given my current situation"
+        
+        # add userinput to thread
+        client.beta.threads.runs.create(
+            thread_id = thread.id,
+            messages = [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        )
 
-        return self.get_ai_res(prompt)
+
+        return self.get_ai_res(thread.id)
+    
 
     def greetings(self):
         greetings = f"Hello there! I'm TransportGPT, I have 3 versions of myself:\n"\
@@ -86,15 +98,43 @@ class Controller:
                 f"3. I can give you some route information to aide you in your travels.\n"
         return greetings
 
-    def route_planner_res(self, prompt, choices):
+    def route_planner_res(self, prompt, choices, thread):
         location = self.parse_input(prompt)
-        return "POST ACCIDENT BOT"
+        ## prompt engineering according to choices
 
-    def route_info_res(self):
-        return "POST ACCIDENT"
-        
+        prompt = "  "
+        client.beta.threads.runs.create(
+            thread_id = thread.id,
+            messages = [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        )
+        return self.get_ai_res(thread.id)
+
+    def route_info_res(self, thread):
+        prompt = "  "
+        client.beta.threads.runs.create(
+            thread_id = thread.id,
+            messages = [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        )
+        return self.get_ai_res(thread.id)
+    
+
+
+
+    '''
     def get_ai_res(self,prompt):
-        return ChatCompletion().get_chat_response(prompt)
+        return ChatCompletion().get_chat_response(prompt)'''
+    
+
 
     def get_routes_from_input(self, start, end) :
         gmaps = googlemaps.Client(key=os.environ.get("GOOGLE_CLOUD_API_KEY"))
@@ -102,24 +142,62 @@ class Controller:
         directions_result = gmaps.directions(start, end, mode="transit", departure_time=now)
         return directions_result
     
-    def get_ai_res(self, prompt):
+    def get_ai_res(self, thread_id):
+        ### crteate file_id_list here
+        file_list = []
 
+        file_list.append(client.files.create(
+            file =open("model/data/data/dynamic/carpark_availability/carpark_availability.json", "rb"),
+            purpose= "assistant"
+        ))
+        file_list.append(client.files.create(
+            file =open("model/data/data/dynamic/estimated_travel_time/estimated_travel_time.json", "rb"),
+            purpose= "assistant"
+        ))
+        file_list.append(client.files.create(
+            file =open("model/data/data/dynamic/rainfall/rainfall.json", "rb"),
+            purpose= "assistant"
+        ))
+        file_list.append(client.files.create(
+            file =open("model/data/data/dynamic/carpark_availability/carpark_availability.json", "rb"),
+            purpose= "assistant"
+        ))
+        file_list.append(client.files.create(
+            file =open("model/data/data/dynamic/carpark_availability/carpark_availability.json", "rb"),
+            purpose= "assistant"
+        ))
+        file_list.append(client.files.create(
+            file =open("model/data/data/dynamic/carpark_availability/carpark_availability.json", "rb"),
+            purpose= "assistant"
+        ))
+        file_list.append(client.files.create(
+            file =open("model/data/data/dynamic/carpark_availability/carpark_availability.json", "rb"),
+            purpose= "assistant"
+        ))
+        file_list.append(client.files.create(
+            file =open("model/data/data/dynamic/carpark_availability/carpark_availability.json", "rb"),
+            purpose= "assistant"
+        ))
+        file_id_list = []
+        for file in file_list:
+            file_id_list.append(file.id)
 
-        my_assistants = client.beta.assistants.list(
-            order="desc",
-            limit="20",
+        assistant = client.beta.assistants.create(
+            name= "transportGPT",
+            description = ASSISSTANT_INSTRUCTION,
+            model= MODEL,
+            tools= TOOLS,
+            file_ids= file_id_list
         )
 
-        print(my_assistants.data)
+        with self.client.beta.threads.runs.create_and_stream(
+                thread_id = self.thread.id,
+                assistant_id = self.assistant.id,
+                instructions= ASSISSTANT_INSTRUCTION,
+                event_handler= EventHandler(),
+        ) as stream:
+            stream.until_done()
 
 
-
-
-        run = client.beta.threads.runs.create(
-        
-        assistant_id = pricingAssistant.id
-)
-
-        #return pricingAssistant.get_assistant_response(prompt) + ""
     
     
