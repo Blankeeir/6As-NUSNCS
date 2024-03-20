@@ -100,10 +100,6 @@ def monitor_output():
             print(MainController.output, end = "")
             output = MainController.output
 
-
-
-
-
 # Create threads
 t1 = threading.Thread(target = process_stream)
 t2 = threading.Thread(target = monitor_output)
