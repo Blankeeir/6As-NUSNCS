@@ -2,8 +2,8 @@
 from openai import OpenAI
 import os
 import json
-from envVar import *
 
+from model.OpenAiModel.envVar import *
 
 
 class ChatCompletion(object):

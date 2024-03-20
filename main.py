@@ -60,6 +60,8 @@ def route_info():
     if userInput:
         return respond(MainController.route_info_res())
     return respond("No input")
+messages = {"messages": [{"role": "user", "content": "I lost my book today."}, {"role": "assistant", "content": "You can read everything on ebooks these days!"}]}
+print(MainController.get_ai_res(messages))
 
 if __name__ == '__main__':
     print("Starting server on port :80")

@@ -4,8 +4,9 @@ from envVar import *
 from imageGeneration import *
 from eventHandler import *
 
+from model.OpenAiModel.event_handler import EventHandler
 
-#### assisstants are for data feeds 
+#### assisstants are for data feeds
 # assistant list: decoder assistant & pricing model assistant &  
 ### This py implements assistant api
 

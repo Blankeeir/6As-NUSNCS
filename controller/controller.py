@@ -1,7 +1,7 @@
 import json
 
 from model.OpenAiModel.chat_completion import ChatCompletion
-from model.OpenAiModel.openai_request import MODEL
+from model.OpenAiModel.envVar import MODEL, CLIENT
 from model.data.run_dynamic_data import update # do not remove
 from openai import OpenAI
 import googlemaps
@@ -68,8 +68,9 @@ class Controller:
     def post_accident_bot_res(self, prompt):
         accident_description = prompt
         location = self.parse_input(prompt)
+        loc = location if location else "Singapore"
         prompt = f"I am at this location: "
-        prompt += location + "\n"
+        prompt += loc + "\n"
         prompt += f"I just had an vehicular accident, "
         prompt += accident_description + "\n"
         prompt += f"please recommend me on the best medical advice"\
@@ -92,7 +93,7 @@ class Controller:
         return "POST ACCIDENT"
         
     def get_ai_res(self,prompt):
-        return ChatCompletion(MODEL).get_chat_response(prompt)
+        return ChatCompletion().get_chat_response(prompt)
 
     def get_routes_from_input(self, start, end) :
         gmaps = googlemaps.Client(key=os.environ.get("GOOGLE_CLOUD_API_KEY"))
