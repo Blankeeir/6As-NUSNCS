@@ -7,7 +7,7 @@ from openai import OpenAI
 import googlemaps
 from datetime import datetime
 import os
-
+client = CLIENT
 
 class Controller:
     client = OpenAI()
@@ -84,6 +84,20 @@ class Controller:
                 f"2. I can help you plan a route given your current start and end location given your preferences on ERP, weather conditions and eco-friendliness\n"\
                 f"3. I can give you some route information to aide you in your travels.\n"
         return greetings
+    
+    async def get_real_time_data(self):
+        apis = None
+        with open("data/dynamic/apis.json", 'r') as file:
+            apis = json.load(file)
+        
+        apiMock = {
+            "interval": 10,
+            "url": "https://api.data.gov.sg/v1/environment/2-hour-weather-forecast",
+            "name": "rainfall"
+        }
+
+        update(apiMock)
+    
 
     def route_planner_res(self, prompt, choices):
         location = self.parse_input(prompt)
@@ -100,4 +114,17 @@ class Controller:
         now = datetime.now()
         directions_result = gmaps.directions(start, end, mode="transit", departure_time=now)
         return directions_result
+    
+    def get_ai_res(self, prompt):
+        thread = client.beta.threads.create()
 
+        ## create several assistants for different purposes 
+        pricingAssistant = Assistant()
+        run = client.beta.threads.runs.create(
+        thread_id = thread.id,
+        assistant_id = pricingAssistant.id
+)
+
+        return pricingAssistant.get_assistant_response(prompt) + ""
+    
+    
