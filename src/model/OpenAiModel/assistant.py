@@ -54,7 +54,7 @@ class Assistant:
                 thread_id = self.thread.id,
                 assistant_id = self.assistant.id,
                 instructions=ASSISSTANT_INSTRUCTION,
-                event_handler=EventHandler(),
+                event_handler= EventHandler(),
         ) as stream:
             stream.until_done()
 

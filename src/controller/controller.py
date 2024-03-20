@@ -66,5 +66,5 @@ class Controller:
         ## create several assistants for different purposes 
         pricingAssistant = Assistant()
 
-        return pricingAssistant.get_assistant_response(prompt)
+        return pricingAssistant.get_assistant_response(prompt) + "";
 
