@@ -1,30 +1,28 @@
 from openai import OpenAI
+
 from model.OpenAiModel.chat_completion import *
-from envVar import *
-from imageGeneration import *
 from model.OpenAiModel.event_handler import *
 
 from model.OpenAiModel.event_handler import EventHandler
+from model.OpenAiModel.fine_tune import client
+
 
 #### assisstants are for data feeds
 # assistant list: decoder assistant & pricing model assistant &  
 ### This py implements assistant api
 
-client = CLIENT
-
-
 ### specify assistant file ids here
 
 
-
 class Assistant:
-    def __init__(self, fileids):
+    def __init__(self, file_ids):
         ### upload file for this assistant
+        self.client = CLIENT
         self.file = self.client.files.create(
-            file = open("data/static/ERP Rates.json", "rb"),
+            file=open("data/static/Geospatial Whole Island.json", "rb"),
             purpose='assistants'
         )
-        self.file_ids = [self.file.id]
+        self.file_ids = file_ids
         '''
         self.thread = self.client.beta.threads.create(
             messages=[
@@ -37,35 +35,31 @@ class Assistant:
         )'''
         self.assistant = self.client.beta.assistants.create(
             name="transportGPT",
-            description = ASSISSTANT_INSTRUCTION,
-            model= MODEL,
-            tools= TOOLS,
-            file_ids=[self.file.id]
+            description=ASSISSTANT_INSTRUCTION,
+            model=MODEL,
+            tools=TOOLS,
+            file_ids=file_ids
         )
 
     def addMessage(self, role, content):
         message = client.beta.threads.messages.create(
-            thread_id =self.thread.id,
-            role = role,
-            content = content,
-            file_id = self.file_ids
+            thread_id=self.thread.id,
+            role=role,
+            content=content,
+            file_id=self.file_ids
         )
 
     def run(self):
         with self.client.beta.threads.runs.create_and_stream(
-                thread_id = self.thread.id,
-                assistant_id = self.assistant.id,
-                instructions= ASSISSTANT_INSTRUCTION,
-                event_handler= EventHandler(),
+                thread_id=self.thread.id,
+                assistant_id=self.assistant.id,
+                instructions=ASSISSTANT_INSTRUCTION,
+                event_handler=EventHandler(),
         ) as stream:
             stream.until_done()
 
 
-
-
-
-
-#code interpreter
+# code interpreter
 '''  
 image_data = client.files.content("file-abc123")
 image_data_bytes = image_data.read()
@@ -73,8 +67,6 @@ image_data_bytes = image_data.read()
 with open("./my-image.png", "wb") as file:
     file.write(image_data_bytes)
 '''
-
-
 
 if __name__ == '__main__':
     assistant = Assistant()
