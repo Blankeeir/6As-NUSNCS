@@ -117,15 +117,7 @@ class Controller:
         return directions_result
     
     def get_ai_res(self, prompt):
-        thread1 = client.beta.threads.create()
-        thread2 = client.beta.threads.create()
-        thread3 = client.beta.threads.create()
-        ## create several assistants for different purposes 
-        pricingAssistant = Assistant()
-        routeAssistant = Assistant()
-        postAccidentAssistant = Assistant()
-        ecoAssistant = Assistant()
-        weatherAssistant = Assistant()
+
 
         my_assistants = client.beta.assistants.list(
             order="desc",
@@ -138,7 +130,7 @@ class Controller:
 
 
         run = client.beta.threads.runs.create(
-        thread_id = thread1.id,
+        
         assistant_id = pricingAssistant.id
 )
 

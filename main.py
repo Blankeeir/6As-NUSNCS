@@ -11,6 +11,15 @@ CORS(app)
 MainController = Controller()
 dialogue_api_hl = dialogue_api_handler()
 
+thread1 = client.beta.threads.create()
+thread2 = client.beta.threads.create()
+thread3 = client.beta.threads.create()
+## create several assistants for different purposes 
+pricingAssistant = Assistant()
+routeAssistant = Assistant()
+postAccidentAssistant = Assistant()
+ecoAssistant = Assistant()
+weatherAssistant = Assistant()
 parser = reqparse.RequestParser()
 parser.add_argument('user_input',type=str,location='json')
 
@@ -61,6 +70,9 @@ def route_info():
         return respond(MainController.route_info_res())
     return respond("No input")
 
+
+
 if __name__ == '__main__':
     print("Starting server on port :80")
     app.run(host='0.0.0.0', port=80, debug=True)
+
