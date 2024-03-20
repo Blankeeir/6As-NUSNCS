@@ -4,6 +4,9 @@ from model.OpenAiModel.ChatCompletion import ChatCompletion
 from model.OpenAiModel.OpenAiRequest import MODEL
 from model.data.run_dynamic_data import update # do not remove
 from openai import OpenAI
+import googlemaps
+from datetime import datetime
+import os
 
 
 class Controller:
@@ -74,5 +77,9 @@ class Controller:
     def get_ai_res(self,prompt):
         return ChatCompletion(MODEL).get_chat_response(prompt)
 
-    # Functions to fine tune the model with the given static & real-time data
+    def get_routes_from_input(self, start, end) :
+        gmaps = googlemaps.Client(key=os.environ.get("GOOGLE_CLOUD_API_KEY"))
+        now = datetime.now()
+        directions_result = gmaps.directions(start, end, mode="transit", departure_time=now)
+        return directions_result
 
