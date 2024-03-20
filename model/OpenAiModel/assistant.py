@@ -1,8 +1,8 @@
 from openai import OpenAI
-from chatCompletion import *
+from model.OpenAiModel.chat_completion import *
 from envVar import *
 from imageGeneration import *
-from eventHandler import *
+from model.OpenAiModel.event_handler import *
 
 from model.OpenAiModel.event_handler import EventHandler
 
@@ -21,10 +21,11 @@ class Assistant:
     def __init__(self, fileids):
         ### upload file for this assistant
         self.file = self.client.files.create(
-            file=open("data/static/ERP Rates.json", "rb"),
+            file = open("data/static/ERP Rates.json", "rb"),
             purpose='assistants'
         )
         self.file_ids = [self.file.id]
+        '''
         self.thread = self.client.beta.threads.create(
             messages=[
                 {
@@ -33,7 +34,7 @@ class Assistant:
                     "file_ids": self.file_ids
                 }
             ]
-        )
+        )'''
         self.assistant = self.client.beta.assistants.create(
             name="transportGPT",
             description = ASSISSTANT_INSTRUCTION,
@@ -54,7 +55,7 @@ class Assistant:
         with self.client.beta.threads.runs.create_and_stream(
                 thread_id = self.thread.id,
                 assistant_id = self.assistant.id,
-                instructions=ASSISSTANT_INSTRUCTION,
+                instructions= ASSISSTANT_INSTRUCTION,
                 event_handler= EventHandler(),
         ) as stream:
             stream.until_done()
@@ -65,13 +66,13 @@ class Assistant:
 
 
 #code interpreter
-            
+'''  
 image_data = client.files.content("file-abc123")
 image_data_bytes = image_data.read()
 
 with open("./my-image.png", "wb") as file:
     file.write(image_data_bytes)
-
+'''
 
 
 
