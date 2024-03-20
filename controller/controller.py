@@ -9,6 +9,7 @@ import googlemaps
 from datetime import datetime
 import os
 
+client = CLIENT
 class Controller:
     client = CLIENT
     # Functions to get the static data from ../../data folder
@@ -97,7 +98,7 @@ class Controller:
                 f"3. I can give you some route information to aide you in your travels.\n"
         return greetings
 
-    def route_planner_res(self, prompt, choices, thread):
+    def route_planner_res(self, prompt, thread):
         location = self.parse_input(prompt)
         ## prompt engineering according to choices
 
