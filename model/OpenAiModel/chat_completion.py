@@ -6,13 +6,16 @@ from dotenv import load_dotenv
 load_dotenv('.env.dev')
 
 class ChatCompletion(object):
+    chat_history = []
     def __init__(self, model_name = 'gpt-3.5-turbo'):
         super().__init__()
         self.model_name = model_name
 
-    def get_chat_response(self, message):
+    def get_chat_response(self, messages):
 
         res = ""
+
+        self.chat_history.append(messages)  # add user message to chat history
 
         client = OpenAI(
             # This is the default and can be omitted
@@ -20,12 +23,7 @@ class ChatCompletion(object):
         )
 
         response = client.chat.completions.create(
-            messages=[
-                {
-                    "role": "user",  # role: the role of the messenger (either system, user, assistant or tool)
-                    "content": message,  # user messages
-                },
-            ],
+            messages=self.chat_history,
             model = self.model_name,
             temperature=0.8,
             n=1,  # how many choices to get
