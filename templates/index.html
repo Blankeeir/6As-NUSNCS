@@ -188,6 +188,11 @@
     align-items: flex-start;
 }
 
+.invisible-panel-nonUser {
+    display: flex;
+    align-items: flex-start;
+}
+
 .container-assistant {
     display: flex;
     flex-direction: row;
@@ -280,26 +285,32 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script>
-        function addMessage(message, role = 'assistant') {
-            editMode = false;
-            const messageDiv = document.createElement('div');
-            messageDiv.textContent = message;
-            messageDiv.classList.add('message', `role-${role}`);
-            
-            const iconImg = document.createElement('img');
-            iconImg.src = role === 'user' ? 'path_to_user_icon.png' : 'path_to_assistant_icon.png';
-            iconImg.alt = role === 'user' ? 'User Icon' : 'Assistant Icon';
-            iconImg.classList.add('icon', `icon-${role}`);
-            
-            const messageContainer = document.createElement('div');
-            messageContainer.classList.add('message-container', `container-${role}`);
-            messageContainer.appendChild(iconImg);
-            messageContainer.appendChild(messageDiv);
-
+        function buildInvidiblePanel(role, wrapper) {
+           
             const invisiblePanel = document.createElement('div');
-            invisiblePanel.classList.add(`invisible-panel-${role}`);
             invisiblePanel.style.height = '20px'; // Set a specific height for the invisible panel
 
+            if (role != 'user') {
+                invisiblePanel.classList.add(`invisible-panel-nonUser`);
+                const reloadButton = document.createElement('button');
+                reloadButton.textContent = "Reload"; // Set the path to your modification icon
+                reloadButton.style.display = 'none'; // Initially hide the modification icon
+                reloadButton.addEventListener('click', () => {
+                    console.log("reload");
+                });
+                invisiblePanel.appendChild(reloadButton);
+                wrapper.addEventListener('mouseover', () => {
+                    if (!editMode) {
+                    reloadButton.style.display = 'block';
+                    } // Show modification icon on mouseover
+                });
+                wrapper.addEventListener('mouseout', () => {
+                    reloadButton.style.display = 'none'; // Hide modification icon on mouseout
+                });
+                return invisiblePanel;
+            }
+
+            invisiblePanel.classList.add(`invisible-panel-user`);
             const modificationIcon = document.createElement('button');
             modificationIcon.textContent = "Edit"; // Set the path to your modification icon
             modificationIcon.style.display = 'none'; // Initially hide the modification icon
@@ -312,12 +323,14 @@
                 editMode = true;
             });
 
+            editMode = false;
             const saveButton = document.createElement('button');
             saveButton.textContent = 'Save';
             saveButton.style.display = 'none'; // Initially hide the Save button
             saveButton.addEventListener('click', () => {
                 messageDiv.blur();
-                messageDiv.contentEditable = false; // Disable editing in the message div
+                messageDiv.contentEditable = false;
+                messageDiv.textContent = messageDiv.textContent.trim();
                 saveButton.style.display = 'none'; // Hide Save button
                 cancelButton.style.display = 'none'; // Hide Cancel button
                 modificationIcon.style.display = 'block'; // Show modification icon
@@ -341,10 +354,6 @@
         invisiblePanel.appendChild(saveButton); // Append Save button to the invisible panel
         invisiblePanel.appendChild(cancelButton); // Append Cancel button to the invisible panel
 
-        const wrapper = document.createElement('div');
-        wrapper.classList.add(`wrapper`);
-        wrapper.appendChild(messageContainer);
-        wrapper.appendChild(invisiblePanel);
         wrapper.addEventListener('mouseover', () => {
             if (!editMode) {
             modificationIcon.style.display = 'block';
@@ -353,6 +362,28 @@
         wrapper.addEventListener('mouseout', () => {
             modificationIcon.style.display = 'none'; // Hide modification icon on mouseout
         });
+        return invisiblePanel;
+        }
+        function addMessage(message, role = 'assistant') {
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = message;
+            messageDiv.classList.add('message', `role-${role}`);
+            
+            const iconImg = document.createElement('img');
+            iconImg.src = role === 'user' ? 'path_to_user_icon.png' : 'path_to_assistant_icon.png';
+            iconImg.alt = role === 'user' ? 'User Icon' : 'Assistant Icon';
+            iconImg.classList.add('icon', `icon-${role}`);
+            
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('message-container', `container-${role}`);
+            messageContainer.appendChild(iconImg);
+            messageContainer.appendChild(messageDiv);
+
+
+        const wrapper = document.createElement('div');
+        wrapper.classList.add(`wrapper`);
+        wrapper.appendChild(messageContainer);
+        wrapper.appendChild(buildInvidiblePanel(role, wrapper));
         outputField.appendChild(wrapper);
     }
 
