@@ -1,5 +1,5 @@
 import tiktoken
-import openai
+
 
 def num_tokens_from_messages(messages, model="gpt-4"):
     """Return the number of tokens used by a list of messages."""

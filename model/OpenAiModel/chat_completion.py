@@ -2,68 +2,61 @@
 from openai import OpenAI
 import os
 import json
-from dotenv import load_dotenv
-load_dotenv('.env.dev')
+from envVar import *
+
+
 
 class ChatCompletion(object):
-    chat_history = []
-    def __init__(self, model_name = 'gpt-3.5-turbo'):
+    def __init__(self):
         super().__init__()
-        self.model_name = model_name
+        self.model_name = MODEL
+        self.client = CLIENT
 
-    def get_chat_response(self, messages):
+    def get_chat_response(self, message):
 
-        res = ""
+        response = self.client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",  # role: the role of the messenger (either system, user, assistant or tool)
+                    "content": message,  # user messages
+                },
+                {
+                    "role": "user",
+                    "content": USER
+                },
+                {
+                    "role": "system",
+                    "content": SYSTEM
+                },
+                {
+                    "role": "assistant",
+                    "content": EXAMPLE
+                }
+            ],
 
-        self.chat_history.append(messages)  # add user message to chat history
-
-        client = OpenAI(
-            # This is the default and can be omitted
-            api_key=os.environ.get("OPENAI_API_KEY")  # see .env
-        )
-
-        response = client.chat.completions.create(
-            messages=self.chat_history,
             model = self.model_name,
             temperature=0.8,
             n=1,  # how many choices to get
             stream = True
         )
+        # print(response)
 
-        for chunk in response:
-            if chunk.choices[0].delta.content is not None:
-                #print(type(chunk.choices[0].delta.content ))
-                res += chunk.choices[0].delta.content or ""
-
-
-        return res
-
-## save time by streaming the response
-## https://beta.openai.com/docs/guides/streaming/
-
-#Typical chat completion using streaming
-'''
-client = OpenAI(
-    # This is the default and can be omitted
-    api_key=os.environ.get("OPENAI_API_KEY")  # see .env
-)
-
-response = client.chat.completions.create(
-    messages=[
-        {
-            "role": "user",    # role: the role of the messenger (either system, user, assistant or tool)
-            "content": "who are you",  # user messages
-        },
-    ],
-    model="gpt-4",
-    temperature=0.7,
-    stream=True,
-    n = 1  # how many choices to get
-)
     
-'''
-### print ChatFormat
-##print(json.dumps(json.loads(response.model_dump_json()), indent=4))
+        for chunk in response:
+            print(chunk.choices[0].delta.content, end = "")
+
+if __name__ == '__main__':
+    requestor = ChatCompletion()
+    input_s = input('user input: ')
+    requestor.get_chat_response(input_s)
+    '''print(res)
+
+    response = res
+
+    print(f"chatGPT: {response}")'''
+
+        # To get number of tokens
+        # print(num_tokens_from_messages(messages, MODEL))
 
 
 
