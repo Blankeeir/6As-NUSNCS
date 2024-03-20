@@ -116,6 +116,78 @@
     box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Add shadow when selected */
 }
 
+.container-user {
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: flex-start;
+    }
+
+    .container-assistant {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+    }    
+/* Styling for the message content */
+.message {
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    max-width: 70%;
+    word-wrap: break-word; /* Wrap long words to avoid overflow */
+    background-color: #f0f0f0; /* Light gray background */
+}
+
+/* Styling for the icon */
+.icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    overflow: hidden; /* Hide overflowing content */
+}
+
+.icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Maintain aspect ratio and cover the entire area */
+}
+
+/* Styling for the message container */
+.message-container {
+    display: flex;
+    align-items: center;
+}
+
+/* Styling for user-specific elements */
+.role-user .message {
+    background-color: #d6eaf8; /* Light blue background for user messages */
+}
+
+.role-user .icon img {
+    border: 2px solid #007bff; /* Blue border for user icon */
+}
+
+/* Styling for assistant-specific elements */
+.role-assistant .message {
+    background-color: #f0f0f0; /* Light gray background for assistant messages */
+}
+
+.role-assistant .icon img {
+    border: 2px solid #ccc; /* Gray border for assistant icon */
+}
+
+.container-user {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-start;
+}
+
+.container-assistant {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
 
 
 </style>
@@ -123,7 +195,7 @@
 <body>
     <div class="container">
         <div class="left-section">
-            <textarea id="outputField" class="output-field" placeholder="Output Field"></textarea>
+            <div id="outputField" class="output-field"></div>
             <div class="input-container">
                 <input id="inputField" type="text" class="input-field" placeholder="Input Field">
                 <button id="submitButton" class="enter-button">Enter</button>
@@ -168,23 +240,42 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script>
         document.getElementById('submitButton').addEventListener('click', function() {
-            const userInputDom = document.getElementById('inputField');
-            const userInput = userInputDom.value;
-            const requestData = { "user_input": userInput };
-            const url = 'http://localhost:80/post_accident';
+            const userInput = document.getElementById('inputField');
+            const outPutField = document.getElementById('outputField');
+            function addMessage(message, role = 'assistant') {
+                const messageDiv = document.createElement('div');
+                messageDiv.textContent = message;
+                messageDiv.classList.add('message', `role-${role}`);
+                
+                const iconImg = document.createElement('img');
+                iconImg.src = role === 'user' ? 'path_to_user_icon.png' : 'path_to_assistant_icon.png';
+                iconImg.alt = role === 'user' ? 'User Icon' : 'Assistant Icon';
+                iconImg.classList.add('icon', `icon-${role}`);
+                
+                const messageContainer = document.createElement('div');
+                messageContainer.classList.add('message-container', `container-${role}`);
+                messageContainer.appendChild(iconImg);
+                messageContainer.appendChild(messageDiv);
+                outputField.appendChild(messageContainer);
+            }
             function sendRequest() {
-                userInputDom.value = '';
+                const url = 'http://localhost:80/post_accident';
+                const userInputValue = userInput.value;
+                const requestData = { "user_input": userInputValue };
+                userInput.value = '';
+                addMessage(userInputValue, 'user');
+                addMessage("debug");
                 $.ajax({
                     type: 'POST',
                     url: url,
                     data: JSON.stringify(requestData),
                     contentType: 'application/json',
                     success: function(data) {
-                        document.getElementById('outputField').value = data.res;
+                        addMessage(data.res);
                     },
                     error: function(xhr, status, error) {
                     console.log(error);
-                    userInputDom.value = userInput;
+                    userInput.value = userInputValue;
                      }
                 });
                 }
