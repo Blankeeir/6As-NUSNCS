@@ -1,4 +1,7 @@
 import json
+import threading
+
+from flask import Response
 
 from model.OpenAiModel.chat_completion import ChatCompletion
 from model.OpenAiModel.envVar import *
@@ -126,7 +129,7 @@ class Controller:
             role="user",
             content=prompt
         )
-        self.get_ai_res(thread)
+        return self.get_ai_res(thread)
 
     '''
     def get_ai_res(self,prompt):
@@ -139,61 +142,68 @@ class Controller:
         return directions_result
 
     def get_ai_res(self, thread):
-        ### crteate file_id_list here
-        self.output = ""
-        self.isProcessing = True
+        try: 
+            self.output = ""
+            self.isProcessing = True
 
-        file_list = []
-        test_file_name = "data/dynamic/carpark_availability/carpark_availability.json"
-        if is_json_file(test_file_name):
-            test_file = client.files.create(
-                        file = open(test_file_name, "rb"),
-                        purpose ="assistants"
-                    )
-            file_list = [test_file]
+            file_list = []
+            test_file_name = "data/dynamic/carpark_availability/carpark_availability.json"
+            if is_json_file(test_file_name):
+                test_file = client.files.create(
+                            file = open(test_file_name, "rb"),
+                            purpose ="assistants"
+                        )
+                file_list = [test_file]
 
-        '''
-        for dirpath, dirnames, filenames in os.walk("data/dynamic"):
-            for filename in filenames:
-                if is_json_file(os.path.join(dirpath, filename)):
-                    file = client.files.create(
-                        file=open(os.path.join(dirpath, filename), "rb"),
-                        purpose="assistants"
-                    )
-                    file_list.append(file)
+            '''
+            for dirpath, dirnames, filenames in os.walk("data/dynamic"):
+                for filename in filenames:
+                    if is_json_file(os.path.join(dirpath, filename)):
+                        file = client.files.create(
+                            file=open(os.path.join(dirpath, filename), "rb"),
+                            purpose="assistants"
+                        )
+                        file_list.append(file)
 
 
-        for dirpath, dirnames, filenames in os.walk("data/static"):
-            for filename in filenames:
-                if is_json_file(os.path.join(dirpath, filename)):
-                    file = client.files.create(
-                        file=open(os.path.join(dirpath, filename), "rb"),
-                        purpose="assistants"
-                    )
-                    file_list.append(file)
-        '''
+            for dirpath, dirnames, filenames in os.walk("data/static"):
+                for filename in filenames:
+                    if is_json_file(os.path.join(dirpath, filename)):
+                        file = client.files.create(
+                            file=open(os.path.join(dirpath, filename), "rb"),
+                            purpose="assistants"
+                        )
+                        file_list.append(file)
+            '''
 
-        file_id_list = []
+            file_id_list = []
 
-        for file in file_list:
-            file_id_list.append(file.id)
+            for file in file_list:
+                file_id_list.append(file.id)
 
-        assistant = client.beta.assistants.create(
-            name="transportGPT",
-            description=ASSISTANT_INSTRUCTION,
-            model= MODEL,
-            tools= TOOLS,
-            file_ids = file_id_list
-        )
+            assistant = client.beta.assistants.create(
+                name="transportGPT",
+                description=ASSISTANT_INSTRUCTION,
+                model= MODEL,
+                tools= TOOLS,
+                file_ids = file_id_list
+            )
 
-        eventHandler = EventHandler(self)
-
-        with self.client.beta.threads.runs.create_and_stream(
-                thread_id=thread.id,
-                assistant_id=assistant.id,
-                instructions = ASSISTANT_INSTRUCTION,
-                event_handler = eventHandler,
-        ) as stream:
-            stream.until_done()
-            self.isProcessing = False
-            print(f"\n\ndone event\n event_info: done one thread {thread.id}, served by assistant {assistant.id}\n\n")
+            eventHandler = EventHandler()
+            consumer = eventHandler.get_consumer()
+            def clean_up():
+                with self.client.beta.threads.runs.create_and_stream(
+                    thread_id=thread.id,
+                    assistant_id=assistant.id,
+                    instructions = ASSISTANT_INSTRUCTION,
+                    event_handler = eventHandler,
+                ) as stream:
+                    stream.until_done()
+                    self.isProcessing = False
+                    print(f"\n\ndone event\n event_info: done one thread {thread.id}, served by assistant {assistant.id}\n\n")
+                    eventHandler.close()
+            clean_up_thread = threading.Thread(target= clean_up)
+            return consumer
+        finally: 
+            clean_up_thread.start()
+           

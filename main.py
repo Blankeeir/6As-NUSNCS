@@ -1,7 +1,7 @@
 from controller.controller import Controller
 from model.OpenAiModel.count_tokens import num_tokens_from_messages
 from web_api.dialogue_api import dialogue_api_handler
-from flask import Flask, render_template
+from flask import Flask, Response, render_template
 from flask_restful import Api, reqparse
 from flask_cors import CORS
 from model.OpenAiModel.envVar import *
@@ -75,6 +75,11 @@ def route_info():
         return respond(MainController.output)
     return respond("No input")
 
+@app.route("/poc", methods=['GET'])
+def poc():
+    stream = MainController.route_info_res("Please introduce Singapore", thread3)
+    return Response(stream(), mimetype='text/event-stream')
+
 def token_check(message):
     return len(message) < 4096
 '''
@@ -105,8 +110,8 @@ t1 = threading.Thread(target = process_stream)
 t2 = threading.Thread(target = monitor_output)
 
 # Start threads
-t1.start()
-t2.start()
+#t1.start()
+#t2.start()
 
 
 

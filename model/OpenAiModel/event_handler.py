@@ -11,24 +11,27 @@ class EventHandler(AssistantEventHandler):
         super().__init__()
   
     def get_consumer(self):
-        def consumer():
-            while True:
-                if self.queue.closed:
-                    break
-                yield self.queue.get()
+      def consumer():
+        while True:
+          message = self.queue.get()
+          if isinstance(message, str):
+            yield message.encode('utf-8')  # Convert message to bytes
+          else:
+            yield message
 
-        return consumer
+      return consumer
     
     @override
     def on_text_created(self, text) -> None:
-        self.queue.put(text)
+        return
+        #self.queue.put(text)
 
     @override
     def on_text_delta(self, delta, snapshot):
         self.queue.put(delta.value)
 
     def on_tool_call_created(self, tool_call):
-        self.controller.output = f"\nassistant > {tool_call.type}\n"
+        self.queue.put(tool_call.type)
 
     def on_tool_call_delta(self, delta, snapshot):
         if delta.type == 'code_interpreter':
