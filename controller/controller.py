@@ -26,7 +26,8 @@ def is_json_file(filename):
 class Controller:
     def __init__(self):
         self.client = CLIENT
-        self.eventHandler = EventHandler()
+        self.output = ""
+        self.isProcessing = True
 
     # Functions to get the static data from ../../data folder
     def get_static_data(self, file_path):
@@ -139,6 +140,9 @@ class Controller:
 
     def get_ai_res(self, thread):
         ### crteate file_id_list here
+        self.output = ""
+        self.isProcessing = True
+
         file_list = []
         test_file_name = "data/dynamic/carpark_availability/carpark_availability.json"
         if is_json_file(test_file_name):
@@ -181,14 +185,15 @@ class Controller:
             tools= TOOLS,
             file_ids = file_id_list
         )
-        self.eventHandler = EventHandler()
+
+        eventHandler = EventHandler(self)
 
         with self.client.beta.threads.runs.create_and_stream(
                 thread_id=thread.id,
                 assistant_id=assistant.id,
                 instructions = ASSISTANT_INSTRUCTION,
-                event_handler = self.eventHandler,
+                event_handler = eventHandler,
         ) as stream:
             stream.until_done()
-            # self.eventHandler.isProcessing = False
+            self.isProcessing = False
             print(f"\n\ndone event\n event_info: done one thread {thread.id}, served by assistant {assistant.id}\n\n")

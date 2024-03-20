@@ -46,9 +46,9 @@ def echo():
 def chat():
     userInput = parser.parse_args()['user_input']
     if userInput:
-        res = MainController.get_ai_res(userInput)
-        print(res)
-        return respond(res)
+        MainController.get_ai_res(userInput)
+        print(MainController.output)
+        return respond(MainController.output)
     return respond("No input"), 400
 
 @app.route("/post_accident", methods=['POST'])
@@ -56,7 +56,7 @@ def post_accident():
     userInput = parser.parse_args()['user_input']
     if userInput and token_check(userInput):
         MainController.route_info_res(userInput, thread3)
-        return respond(MainController.eventHandler.output)
+        return respond(MainController.output)
     return respond("No input")
 
 @app.route("/route_planner", methods=['POST'])
@@ -64,7 +64,7 @@ def route_planner():
     userInput = parser.parse_args()['user_input']
     if userInput and token_check(userInput):
         MainController.route_info_res(userInput, thread2)
-        return respond(MainController.eventHandler.output)
+        return respond(MainController.output)
     return respond("No input")
 
 @app.route("/route_info", methods=['POST'])
@@ -72,7 +72,7 @@ def route_info():
     userInput = parser.parse_args()['user_input']
     if userInput and token_check(userInput):
         MainController.route_info_res(userInput, thread3)
-        return respond(MainController.eventHandler.output)
+        return respond(MainController.output)
     return respond("No input")
 
 def token_check(message):
@@ -84,40 +84,35 @@ print(MainController.post_accident_bot_res("hi", thread1))
 '''
 print("\n\n\nnow try run route_info_res\n\n\n")
 
-if __name__ == '__main__':
-    print("Starting server on port :80")
-    app.run(host='0.0.0.0', port=80, debug=True)
-
-
 
 ##########################
 # Test the event handler #
 ##########################
-    
+
 
 def process_stream():
-    MainController.route_info_res("hi", thread3)
+    MainController.route_info_res("hi, please provide specific road info on a rainy day in singapore, better include pricing models", thread3)
 
 def monitor_output():
-    i = 0
-    while MainController.eventHandler.isProcessing:
-        print(f"yes{i}")
-        print(MainController.eventHandler.output)
-        if i > 10:
-            break
-        i += 1
+    output = ""
+    while MainController.isProcessing :
+        if MainController.output and MainController.output != output:
+            print(MainController.output, end = "")
+            output = MainController.output
+
+
+
+
 
 # Create threads
-t1 = threading.Thread(target=process_stream)
-t2 = threading.Thread(target=monitor_output)
+t1 = threading.Thread(target = process_stream)
+t2 = threading.Thread(target = monitor_output)
 
 # Start threads
 t1.start()
 t2.start()
 
-# Wait for both threads to finish
-t1.join()
-t2.join()
+
 
 
 '''
@@ -130,5 +125,16 @@ while(MainController.eventHandler.isProcessing):
     print(MainController.eventHandler.output)
     i += 1
 '''
+
+
+
+
+
+
+
+
+if __name__ == '__main__':
+    print("Starting server on port :80")
+    app.run(host='0.0.0.0', port=80, debug=True)
 
 

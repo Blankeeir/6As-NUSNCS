@@ -5,29 +5,34 @@ from openai import AssistantEventHandler
 # how we want to handle the events in the response stream.
 
 class EventHandler(AssistantEventHandler):    
-    def __init__(self):
-        self.output = ""
-        self.isProcessing = True
+    def __init__(self, controller):
+        self.controller = controller
+        self.controller.output = ""
         super().__init__()
 
     @override
     def on_text_created(self, text) -> None:
-        self.output += f"\nassistant > "
+        self.controller.output = f"\nassistant > "
 
     @override
     def on_text_delta(self, delta, snapshot):
-        self.output += delta.value
+        self.controller.output = delta.value
 
     def on_tool_call_created(self, tool_call):
-        self.output += f"\nassistant > {tool_call.type}\n"
+        self.controller.output = f"\nassistant > {tool_call.type}\n"
 
     def on_tool_call_delta(self, delta, snapshot):
         if delta.type == 'code_interpreter':
             if delta.code_interpreter.input:
-                self.output += delta.code_interpreter.input
+                self.controller.output = delta.code_interpreter.input
             if delta.code_interpreter.outputs:
      
-                self.output += "\n\noutput >"
+                self.controller.output = "\n\noutput >"
+    
+    def close(self):
+        self.controller.isProcessing = False
+        super().close()
+
     '''
     @override
     def close(self):
