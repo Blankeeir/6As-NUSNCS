@@ -3,7 +3,7 @@ import tiktoken # for token counting
 import numpy as np
 from collections import defaultdict
 from openai import OpenAI
-from envVar import *
+from model.OpenAiModel.envVar import *
 
 client = CLIENT
 

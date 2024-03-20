@@ -2,6 +2,7 @@ import json
 
 from model.OpenAiModel.chat_completion import ChatCompletion
 from model.OpenAiModel.envVar import MODEL, CLIENT
+from model.OpenAiModel.assistant import Assistant
 from model.data.run_dynamic_data import update # do not remove
 from openai import OpenAI
 import googlemaps
@@ -102,15 +103,31 @@ class Controller:
         return directions_result
     
     def get_ai_res(self, prompt):
-        thread = client.beta.threads.create()
-
+        thread1 = client.beta.threads.create()
+        thread2 = client.beta.threads.create()
+        thread3 = client.beta.threads.create()
         ## create several assistants for different purposes 
         pricingAssistant = Assistant()
+        routeAssistant = Assistant()
+        postAccidentAssistant = Assistant()
+        ecoAssistant = Assistant()
+        weatherAssistant = Assistant()
+
+        my_assistants = client.beta.assistants.list(
+            order="desc",
+            limit="20",
+        )
+
+        print(my_assistants.data)
+
+
+
+
         run = client.beta.threads.runs.create(
-        thread_id = thread.id,
+        thread_id = thread1.id,
         assistant_id = pricingAssistant.id
 )
 
-        return pricingAssistant.get_assistant_response(prompt) + ""
+        #return pricingAssistant.get_assistant_response(prompt) + ""
     
     
