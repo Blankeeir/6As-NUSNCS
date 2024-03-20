@@ -127,14 +127,24 @@
     flex-direction: row;
     align-items: flex-start;
 }    
-/* Styling for the message content */
-.message {
+
+.message-user {
     padding: 10px;
     border-radius: 8px;
     margin-bottom: 10px;
     max-width: 70%;
     word-wrap: break-word; /* Wrap long words to avoid overflow */
-    background-color: #f0f0f0; /* Light gray background */
+    background-color: #6b36bf;
+    color: white; /* Set text color to white */
+}
+
+.message-nonUser {
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    max-width: 70%;
+    word-wrap: break-word; /* Wrap long words to avoid overflow */
+    background-color: #d0caca6e;
 }
 
 /* Styling for the icon */
@@ -231,8 +241,6 @@
 }
 
 
-
-
 </style>
 </head>
 <body>
@@ -285,114 +293,8 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script>
-        function buildInvidiblePanel(role, wrapper) {
-           
-            const invisiblePanel = document.createElement('div');
-            invisiblePanel.style.height = '20px'; // Set a specific height for the invisible panel
-
-            if (role != 'user') {
-                invisiblePanel.classList.add(`invisible-panel-nonUser`);
-                const reloadButton = document.createElement('button');
-                reloadButton.textContent = "Reload"; // Set the path to your modification icon
-                reloadButton.style.display = 'none'; // Initially hide the modification icon
-                reloadButton.addEventListener('click', () => {
-                    console.log("reload");
-                });
-                invisiblePanel.appendChild(reloadButton);
-                wrapper.addEventListener('mouseover', () => {
-                    if (!editMode) {
-                    reloadButton.style.display = 'block';
-                    } // Show modification icon on mouseover
-                });
-                wrapper.addEventListener('mouseout', () => {
-                    reloadButton.style.display = 'none'; // Hide modification icon on mouseout
-                });
-                return invisiblePanel;
-            }
-
-            invisiblePanel.classList.add(`invisible-panel-user`);
-            const modificationIcon = document.createElement('button');
-            modificationIcon.textContent = "Edit"; // Set the path to your modification icon
-            modificationIcon.style.display = 'none'; // Initially hide the modification icon
-            modificationIcon.addEventListener('click', () => {
-                messageDiv.contentEditable = true; // Enable editing directly in the message div
-                messageDiv.focus(); // Focus on the message div for editing
-                saveButton.style.display = 'inline-block'; // Show Save button
-                cancelButton.style.display = 'inline-block'; // Show Cancel button
-                modificationIcon.style.display = 'none'; // Hide modification icon
-                editMode = true;
-            });
-
-            editMode = false;
-            const saveButton = document.createElement('button');
-            saveButton.textContent = 'Save';
-            saveButton.style.display = 'none'; // Initially hide the Save button
-            saveButton.addEventListener('click', () => {
-                messageDiv.blur();
-                messageDiv.contentEditable = false;
-                messageDiv.textContent = messageDiv.textContent.trim();
-                saveButton.style.display = 'none'; // Hide Save button
-                cancelButton.style.display = 'none'; // Hide Cancel button
-                modificationIcon.style.display = 'block'; // Show modification icon
-                editMode = false;
-            });
-
-            const cancelButton = document.createElement('button');
-            cancelButton.textContent = 'Cancel';
-            cancelButton.style.display = 'none'; // Initially hide the Cancel button
-            cancelButton.addEventListener('click', () => {
-                messageDiv.textContent = message; // Restore the original message
-                messageDiv.blur(); 
-                messageDiv.contentEditable = false; // Disable editing in the message div
-                saveButton.style.display = 'none'; // Hide Save button
-                cancelButton.style.display = 'none'; // Hide Cancel button
-                modificationIcon.style.display = 'block'; // Show modification icon
-                editMode = false;
-            });
-
-        invisiblePanel.appendChild(modificationIcon); // Append modification icon to the invisible panel
-        invisiblePanel.appendChild(saveButton); // Append Save button to the invisible panel
-        invisiblePanel.appendChild(cancelButton); // Append Cancel button to the invisible panel
-
-        wrapper.addEventListener('mouseover', () => {
-            if (!editMode) {
-            modificationIcon.style.display = 'block';
-            } // Show modification icon on mouseover
-        });
-        wrapper.addEventListener('mouseout', () => {
-            modificationIcon.style.display = 'none'; // Hide modification icon on mouseout
-        });
-        return invisiblePanel;
-        }
-        function addMessage(message, role = 'assistant') {
-            const messageDiv = document.createElement('div');
-            messageDiv.textContent = message;
-            messageDiv.classList.add('message', `role-${role}`);
-            
-            const iconImg = document.createElement('img');
-            iconImg.src = role === 'user' ? 'path_to_user_icon.png' : 'path_to_assistant_icon.png';
-            iconImg.alt = role === 'user' ? 'User Icon' : 'Assistant Icon';
-            iconImg.classList.add('icon', `icon-${role}`);
-            
-            const messageContainer = document.createElement('div');
-            messageContainer.classList.add('message-container', `container-${role}`);
-            messageContainer.appendChild(iconImg);
-            messageContainer.appendChild(messageDiv);
-
-
-        const wrapper = document.createElement('div');
-        wrapper.classList.add(`wrapper`);
-        wrapper.appendChild(messageContainer);
-        wrapper.appendChild(buildInvidiblePanel(role, wrapper));
-        outputField.appendChild(wrapper);
-    }
-
-        document.getElementById('submitButton').addEventListener('click', function() {
         const userInput = document.getElementById('inputField');
-        const outPutField = document.getElementById('outputField');
-            
-
-
+        const outPutField = document.getElementById('outputField'); 
         function sendRequest() {
             const url = 'http://localhost:80/post_accident';
             const userInputValue = userInput.value;
@@ -413,12 +315,104 @@
                 userInput.value = userInputValue;
                     }
             });
-            }
-            sendRequest();});
-            document.addEventListener('DOMContentLoaded', function() {
-    const assistants = document.querySelectorAll('.assistant');
+        }
 
-    assistants.forEach(assistant => {
+        function addMessage(message, role = 'assistant') {
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = message;
+            messageDiv.classList.add(role ==='user' ? 'message-user' : 'message-nonUser');
+            
+            const iconImg = document.createElement('img');
+            iconImg.src = role === 'user' ? 'path_to_user_icon.png' : 'path_to_assistant_icon.png';
+            iconImg.alt = role === 'user' ? 'User Icon' : 'Assistant Icon';
+            iconImg.classList.add('icon', `icon-${role}`);
+            
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('message-container', `container-${role}`);
+            messageContainer.appendChild(iconImg);
+            messageContainer.appendChild(messageDiv);
+
+            const invisiblePanel = document.createElement('div');
+            invisiblePanel.style.height = '20px'; // Set a specific height for the invisible panel
+            let toWrap;
+            if (role != 'user') {
+                invisiblePanel.classList.add(`invisible-panel-nonUser`);
+                const reloadButton = document.createElement('button');
+                reloadButton.textContent = "Reload"; // Set the path to your modification icon
+                reloadButton.style.display = 'none'; // Initially hide the modification icon
+                reloadButton.addEventListener('click', () => {
+                    console.log("reload");
+                });
+                invisiblePanel.appendChild(reloadButton);
+                toWrap = reloadButton;
+               
+            } 
+            else {
+                invisiblePanel.classList.add(`invisible-panel-user`);
+                const modificationIcon = document.createElement('button');
+                modificationIcon.textContent = "Edit"; // Set the path to your modification icon
+                modificationIcon.style.display = 'none'; // Initially hide the modification icon
+                modificationIcon.addEventListener('click', () => {
+                    messageDiv.contentEditable = true; // Enable editing directly in the message div
+                    messageDiv.focus(); // Focus on the message div for editing
+                    saveButton.style.display = 'inline-block'; // Show Save button
+                    cancelButton.style.display = 'inline-block'; // Show Cancel button
+                    modificationIcon.style.display = 'none'; // Hide modification icon
+                    editMode = true;
+                });
+
+                editMode = false;
+                const saveButton = document.createElement('button');
+                saveButton.textContent = 'Save';
+                saveButton.style.display = 'none'; // Initially hide the Save button
+                saveButton.addEventListener('click', () => {
+                    messageDiv.blur();
+                    messageDiv.contentEditable = false;
+                    messageDiv.textContent = messageDiv.textContent.trim();
+                    saveButton.style.display = 'none'; // Hide Save button
+                    cancelButton.style.display = 'none'; // Hide Cancel button
+                    modificationIcon.style.display = 'block'; // Show modification icon
+                    editMode = false;
+                });
+
+                const cancelButton = document.createElement('button');
+                cancelButton.textContent = 'Cancel';
+                cancelButton.style.display = 'none'; // Initially hide the Cancel button
+                cancelButton.addEventListener('click', () => {
+                    messageDiv.textContent = message; // Restore the original message
+                    messageDiv.blur(); 
+                    messageDiv.contentEditable = false; // Disable editing in the message div
+                    saveButton.style.display = 'none'; // Hide Save button
+                    cancelButton.style.display = 'none'; // Hide Cancel button
+                    modificationIcon.style.display = 'block'; // Show modification icon
+                    editMode = false;
+                });
+
+                invisiblePanel.appendChild(modificationIcon); // Append modification icon to the invisible panel
+                invisiblePanel.appendChild(saveButton); // Append Save button to the invisible panel
+                invisiblePanel.appendChild(cancelButton); // Append Cancel button to the invisible panel
+                toWrap = modificationIcon;
+            }
+
+            const wrapper = document.createElement('div');
+            wrapper.classList.add(`wrapper`);
+            wrapper.appendChild(messageContainer);
+            wrapper.appendChild(invisiblePanel);
+            wrapper.addEventListener('mouseover', () => {
+                if (!editMode) {
+                toWrap.style.display = 'block';
+                } // Show modification icon on mouseover
+            });
+            wrapper.addEventListener('mouseout', () => {
+                toWrap.style.display = 'none'; // Hide modification icon on mouseout
+            });
+            outputField.appendChild(wrapper);
+        }
+
+        document.getElementById('submitButton').addEventListener('click', function() {sendRequest();});
+        document.addEventListener('DOMContentLoaded', function() {
+            const assistants = document.querySelectorAll('.assistant');
+            assistants.forEach(assistant => {
         assistant.addEventListener('click', function() {
             // Remove active class from all assistants
             assistants.forEach(a => a.classList.remove('active'));
@@ -431,10 +425,7 @@
             console.log('Selected assistant:', assistantName);
         });
     });
-});
-
-
-        
+        });   
     </script>
 </body>
 </html>
