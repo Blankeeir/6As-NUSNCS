@@ -199,6 +199,33 @@
     gap: 20px;
 }
 
+.assistant-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center items horizontally */
+    position: relative; /* Needed for absolute positioning of children */
+}
+
+.assistant-description {
+    opacity: 0; /* Start off as transparent */
+    position: absolute;
+    z-index: 10;
+    width: 300px; /* Adjust as needed */
+    background-color: #fff; /* Background color of the description */
+    padding: 10px;
+    border-radius: 4px;
+    top: 50%; /* Position it below the assistant details */
+    left: 50%;
+    transform: translateX(-50%);
+    transition: opacity 0.5s ease-in-out; /* Smooth transition for the opacity */
+    pointer-events: none; /* Avoid mouse events when description is invisible */
+}
+
+.assistant-details:hover .assistant-description {
+    opacity: 1; /* Become opaque on hover */
+}
+
+
 
 
 </style>
@@ -214,9 +241,10 @@
         </div>
         <div class="right-section">
             <div class="assistant">
-                <div class="assistant-name">Assistant 1</div>
+                <div class="assistant-name">Post-Accident Support</div>
                 <div class="assistant-details">
-                    <img src="path_to_image">
+                    <img src="static/img/post-accident.png">
+                    <div class="assistant-description">Provides immediate post-accident support, offering guidance on medical care and legal advice.</div>
                     <ul class="options-list">
                         <li><input type="checkbox"> Option 1</li>
                         <li><input type="checkbox"> Option 2</li>
@@ -225,9 +253,10 @@
                 </div>
             </div>
             <div class="assistant">
-                <div class="assistant-name">Assistant 2</div>
+                <div class="assistant-name">Route Planner</div>
                 <div class="assistant-details">
-                    <img src="path_to_image">
+                    <img src="static/img/route-planner.png">
+                    <div class="assistant-description">Optimizes your travel plans using real-time data on Singapore's Electronic Road Pricing (ERP), weather conditions, and eco-friendly practices.</div>
                     <ul class="options-list">
                         <li><input type="checkbox"> Option 1</li>
                         <li><input type="checkbox"> Option 2</li>
@@ -236,9 +265,10 @@
                 </div>
             </div>
             <div class="assistant">
-                <div class="assistant-name">Assistant 3</div>
+                <div class="assistant-name">Route Information</div>
                 <div class="assistant-details">
-                    <img src="path_to_image">
+                    <img src="static/img/route-information.png">
+                    <div class="assistant-description">Uses prompt engineering to provide route information and images tailored to your travel preferences.</div>
                     <ul class="options-list">
                         <li><input type="checkbox"> Option 1</li>
                         <li><input type="checkbox"> Option 2</li>
@@ -246,7 +276,7 @@
                     </ul>
                 </div>
             </div>
-        </div>              
+        </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script>
