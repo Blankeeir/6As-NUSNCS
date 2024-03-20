@@ -84,20 +84,6 @@ class Controller:
                 f"2. I can help you plan a route given your current start and end location given your preferences on ERP, weather conditions and eco-friendliness\n"\
                 f"3. I can give you some route information to aide you in your travels.\n"
         return greetings
-    
-    async def get_real_time_data(self):
-        apis = None
-        with open("data/dynamic/apis.json", 'r') as file:
-            apis = json.load(file)
-        
-        apiMock = {
-            "interval": 10,
-            "url": "https://api.data.gov.sg/v1/environment/2-hour-weather-forecast",
-            "name": "rainfall"
-        }
-
-        update(apiMock)
-    
 
     def route_planner_res(self, prompt, choices):
         location = self.parse_input(prompt)
