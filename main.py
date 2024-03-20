@@ -76,10 +76,16 @@ def route_info():
 
 def token_check(message):
     return len(message) < 4096
-
+'''
 print(MainController.route_info_res("hi", thread3))
 print(MainController.route_planner_res("hi", thread2))
 print(MainController.post_accident_bot_res("hi", thread1))
+'''
+print("\n\n\nnow try run route_info_res\n\n\n")
+MainController.route_info_res("hi", thread3)
+while(MainController.eventHandler.isProcessing):
+    print("yes")
+    print(MainController.eventHandler.output)
 
 if __name__ == '__main__':
     print("Starting server on port :80")
