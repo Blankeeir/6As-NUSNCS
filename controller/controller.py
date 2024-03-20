@@ -8,10 +8,9 @@ from openai import OpenAI
 import googlemaps
 from datetime import datetime
 import os
-client = CLIENT
+
 
 class Controller:
-
     # Functions to get the static data from ../../data folder
     def get_static_data(self, file_path):
         try:

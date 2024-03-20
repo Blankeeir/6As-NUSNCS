@@ -3,9 +3,9 @@ from web_api.dialogue_api import dialogue_api_handler
 from flask import Flask, render_template
 from flask_restful import Api, reqparse
 from flask_cors import CORS
-from model.OpenAiModel.assistant import *
 from model.OpenAiModel.envVar import *
 
+client = CLIENT
 
 app = Flask(__name__)
 api = Api(app)
