@@ -122,11 +122,11 @@
         align-items: flex-start;
     }
 
-    .container-assistant {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-    }    
+.container-assistant {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}    
 /* Styling for the message content */
 .message {
     padding: 10px;
@@ -182,10 +182,21 @@
     align-items: flex-start;
 }
 
+.invisible-panel-user {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-start;
+}
+
 .container-assistant {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
+}
+
+.wrapper {
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
 
@@ -239,48 +250,111 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script>
+        function addMessage(message, role = 'assistant') {
+            editMode = false;
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = message;
+            messageDiv.classList.add('message', `role-${role}`);
+            
+            const iconImg = document.createElement('img');
+            iconImg.src = role === 'user' ? 'path_to_user_icon.png' : 'path_to_assistant_icon.png';
+            iconImg.alt = role === 'user' ? 'User Icon' : 'Assistant Icon';
+            iconImg.classList.add('icon', `icon-${role}`);
+            
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('message-container', `container-${role}`);
+            messageContainer.appendChild(iconImg);
+            messageContainer.appendChild(messageDiv);
+
+            const invisiblePanel = document.createElement('div');
+            invisiblePanel.classList.add(`invisible-panel-${role}`);
+            invisiblePanel.style.height = '20px'; // Set a specific height for the invisible panel
+
+            const modificationIcon = document.createElement('button');
+            modificationIcon.textContent = "Edit"; // Set the path to your modification icon
+            modificationIcon.style.display = 'none'; // Initially hide the modification icon
+            modificationIcon.addEventListener('click', () => {
+                messageDiv.contentEditable = true; // Enable editing directly in the message div
+                messageDiv.focus(); // Focus on the message div for editing
+                saveButton.style.display = 'inline-block'; // Show Save button
+                cancelButton.style.display = 'inline-block'; // Show Cancel button
+                modificationIcon.style.display = 'none'; // Hide modification icon
+                editMode = true;
+            });
+
+            const saveButton = document.createElement('button');
+            saveButton.textContent = 'Save';
+            saveButton.style.display = 'none'; // Initially hide the Save button
+            saveButton.addEventListener('click', () => {
+                messageDiv.blur();
+                messageDiv.contentEditable = false; // Disable editing in the message div
+                saveButton.style.display = 'none'; // Hide Save button
+                cancelButton.style.display = 'none'; // Hide Cancel button
+                modificationIcon.style.display = 'block'; // Show modification icon
+                editMode = false;
+            });
+
+            const cancelButton = document.createElement('button');
+            cancelButton.textContent = 'Cancel';
+            cancelButton.style.display = 'none'; // Initially hide the Cancel button
+            cancelButton.addEventListener('click', () => {
+                messageDiv.textContent = message; // Restore the original message
+                messageDiv.blur(); 
+                messageDiv.contentEditable = false; // Disable editing in the message div
+                saveButton.style.display = 'none'; // Hide Save button
+                cancelButton.style.display = 'none'; // Hide Cancel button
+                modificationIcon.style.display = 'block'; // Show modification icon
+                editMode = false;
+            });
+
+        invisiblePanel.appendChild(modificationIcon); // Append modification icon to the invisible panel
+        invisiblePanel.appendChild(saveButton); // Append Save button to the invisible panel
+        invisiblePanel.appendChild(cancelButton); // Append Cancel button to the invisible panel
+
+        const wrapper = document.createElement('div');
+        wrapper.classList.add(`wrapper`);
+        wrapper.appendChild(messageContainer);
+        wrapper.appendChild(invisiblePanel);
+        wrapper.addEventListener('mouseover', () => {
+            if (!editMode) {
+            modificationIcon.style.display = 'block';
+            } // Show modification icon on mouseover
+        });
+        wrapper.addEventListener('mouseout', () => {
+            modificationIcon.style.display = 'none'; // Hide modification icon on mouseout
+        });
+        outputField.appendChild(wrapper);
+    }
+
         document.getElementById('submitButton').addEventListener('click', function() {
-            const userInput = document.getElementById('inputField');
-            const outPutField = document.getElementById('outputField');
-            function addMessage(message, role = 'assistant') {
-                const messageDiv = document.createElement('div');
-                messageDiv.textContent = message;
-                messageDiv.classList.add('message', `role-${role}`);
-                
-                const iconImg = document.createElement('img');
-                iconImg.src = role === 'user' ? 'path_to_user_icon.png' : 'path_to_assistant_icon.png';
-                iconImg.alt = role === 'user' ? 'User Icon' : 'Assistant Icon';
-                iconImg.classList.add('icon', `icon-${role}`);
-                
-                const messageContainer = document.createElement('div');
-                messageContainer.classList.add('message-container', `container-${role}`);
-                messageContainer.appendChild(iconImg);
-                messageContainer.appendChild(messageDiv);
-                outputField.appendChild(messageContainer);
+        const userInput = document.getElementById('inputField');
+        const outPutField = document.getElementById('outputField');
+            
+
+
+        function sendRequest() {
+            const url = 'http://localhost:80/post_accident';
+            const userInputValue = userInput.value;
+            const requestData = { "user_input": userInputValue };
+            userInput.value = '';
+            addMessage(userInputValue, 'user');
+            addMessage("debug");
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: JSON.stringify(requestData),
+                contentType: 'application/json',
+                success: function(data) {
+                    addMessage(data.res);
+                },
+                error: function(xhr, status, error) {
+                console.log(error);
+                userInput.value = userInputValue;
+                    }
+            });
             }
-            function sendRequest() {
-                const url = 'http://localhost:80/post_accident';
-                const userInputValue = userInput.value;
-                const requestData = { "user_input": userInputValue };
-                userInput.value = '';
-                addMessage(userInputValue, 'user');
-                addMessage("debug");
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: JSON.stringify(requestData),
-                    contentType: 'application/json',
-                    success: function(data) {
-                        addMessage(data.res);
-                    },
-                    error: function(xhr, status, error) {
-                    console.log(error);
-                    userInput.value = userInputValue;
-                     }
-                });
-                }
-                sendRequest();});
-                document.addEventListener('DOMContentLoaded', function() {
+            sendRequest();});
+            document.addEventListener('DOMContentLoaded', function() {
     const assistants = document.querySelectorAll('.assistant');
 
     assistants.forEach(assistant => {
