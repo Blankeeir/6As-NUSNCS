@@ -1,5 +1,6 @@
 from config.chatgpt_config import config_dict
-from model.OpenAiModel.openai_request import OpenAI_Request
+from model.OpenAiModel.chat_completion import ChatCompletion
+from model.OpenAiModel.openai_request import MODEL
 
 from tools.cfg_wrapper import load_config
 from tools.context import ContextHandler
@@ -34,10 +35,7 @@ class dialogue_api_handler(object):
         generate_config = config.generate_config
 
         # initialize
-        if generate_config.use_cotomize_param:
-            self.requestor = OpenAI_Request(keys, model_name, request_address,generate_config)
-        else:
-            self.requestor = OpenAI_Request(keys, model_name,request_address)
+        self.requester = ChatCompletion(MODEL)
 
     def generate_massage(self,user_input):
 
