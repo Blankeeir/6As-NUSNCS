@@ -1,7 +1,7 @@
 from typing_extensions import override
 from openai import AssistantEventHandler
-from ChatCompletion import *
-from chatgtAssisstant import *
+from chat_completion import *
+from chatgpt_assistant import *
 import OpenAiModel
 import requests
 

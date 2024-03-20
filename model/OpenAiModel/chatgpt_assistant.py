@@ -1,6 +1,5 @@
 ### This py implements assistant api
 from openai import OpenAI
-from chatCompletion import ChatCompletion
 
 #### If request manually:
 '''import requests
@@ -20,11 +19,11 @@ response = requests.post("https://api.openai.com/v1/assistants", headers=headers
 client = OpenAI()
 
 
-class Assisstant(object):
+class Assistant(object):
      def __init__(self,api_key,assistant_name):
          super().__init__()
          self.api_key = api_key
-         self.assisstant_name = assistant_name
+         self.assistant_name = assistant_name
 
 
 assistant = client.beta.assistants.create(
