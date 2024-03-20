@@ -1,5 +1,4 @@
-from controller.controller import Controller, client
-from model.OpenAiModel.assistant import Assistant
+from controller.controller import Controller
 from web_api.dialogue_api import dialogue_api_handler
 from flask import Flask, render_template
 from flask_restful import Api, reqparse
@@ -12,18 +11,15 @@ CORS(app)
 MainController = Controller()
 dialogue_api_hl = dialogue_api_handler()
 
-# thread for adding messages
 thread1 = client.beta.threads.create()
 thread2 = client.beta.threads.create()
 thread3 = client.beta.threads.create()
-
 ## create several assistants for different purposes 
 pricingAssistant = Assistant()
 routeAssistant = Assistant()
 postAccidentAssistant = Assistant()
 ecoAssistant = Assistant()
 weatherAssistant = Assistant()
-
 parser = reqparse.RequestParser()
 parser.add_argument('user_input',type=str,location='json')
 
@@ -73,6 +69,7 @@ def route_info():
     if userInput:
         return respond(MainController.route_info_res())
     return respond("No input")
+
 
 
 if __name__ == '__main__':
