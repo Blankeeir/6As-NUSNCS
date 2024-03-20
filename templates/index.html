@@ -253,7 +253,7 @@
             </div>
         </div>
         <div class="right-section">
-            <div class="assistant">
+            <div class="assistant" id="post_accident">
                 <div class="assistant-name">Post-Accident Support</div>
                 <div class="assistant-details">
                     <img src="static/img/post-accident.png">
@@ -265,7 +265,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="assistant">
+            <div class="assistant" id="route_planner">
                 <div class="assistant-name">Route Planner</div>
                 <div class="assistant-details">
                     <img src="static/img/route-planner.png">
@@ -277,7 +277,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="assistant">
+            <div class="assistant" id="route_info">
                 <div class="assistant-name">Route Information</div>
                 <div class="assistant-details">
                     <img src="static/img/route-information.png">
@@ -295,8 +295,9 @@
     <script>
         const userInput = document.getElementById('inputField');
         const outPutField = document.getElementById('outputField'); 
+        let currentAssistant = document.getElementById('post_accident');
         function sendRequest() {
-            const url = 'http://localhost:80/post_accident';
+            const url = `http://localhost:80/${currentAssistant.id}`;
             const userInputValue = userInput.value;
             const requestData = { "user_input": userInputValue };
             userInput.value = '';
@@ -421,8 +422,8 @@
             this.classList.add('active');
             
             // Get the name of the clicked assistant and log it
-            const assistantName = this.getAttribute('data-name');
-            console.log('Selected assistant:', assistantName);
+            currentAssistant = this;
+            console.log('Selected assistant:', currentAssistant.id);
         });
     });
         });   

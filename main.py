@@ -54,21 +54,24 @@ def chat():
 def post_accident():
     userInput = parser.parse_args()['user_input']
     if userInput and token_check(userInput):
-        return respond(MainController.post_accident_bot_res(userInput, thread1))
+        MainController.route_info_res(userInput, thread3)
+        return respond(MainController.eventHandler.output)
     return respond("No input")
 
 @app.route("/route_planner", methods=['POST'])
 def route_planner():
     userInput = parser.parse_args()['user_input']
     if userInput and token_check(userInput):
-        return respond(MainController.route_planner_res(userInput, thread2))
+        MainController.route_info_res(userInput, thread2)
+        return respond(MainController.eventHandler.output)
     return respond("No input")
 
 @app.route("/route_info", methods=['POST'])
 def route_info():
     userInput = parser.parse_args()['user_input']
     if userInput and token_check(userInput):
-        return respond(MainController.route_info_res(userInput, thread3))
+        MainController.route_info_res(userInput, thread3)
+        return respond(MainController.eventHandler.output)
     return respond("No input")
 
 def token_check(message):

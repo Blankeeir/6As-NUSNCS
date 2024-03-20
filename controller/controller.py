@@ -8,12 +8,25 @@ from openai import OpenAI
 import googlemaps
 from datetime import datetime
 import os
+import json
 
 client = CLIENT
 
 
+
+def is_json_file(filename):
+    try:
+        with open(filename, 'r') as f:
+            json.load(f)
+        return True
+    except json.JSONDecodeError:
+        return False
+    
+
 class Controller:
-    client = CLIENT
+    def __init__(self):
+        self.client = CLIENT
+        self.eventHandler = EventHandler()
 
     # Functions to get the static data from ../../data folder
     def get_static_data(self, file_path):
@@ -87,7 +100,7 @@ class Controller:
             content=prompt
         )
 
-        return self.get_ai_res(thread)
+        self.get_ai_res(thread)
 
     def greetings(self):
         greetings = f"Hello there! I'm TransportGPT, I have 3 versions of myself:\n" \
@@ -104,7 +117,7 @@ class Controller:
             role="user",
             content=prompt
         )
-        return self.get_ai_res(thread)
+        self.get_ai_res(thread)
 
     def route_info_res(self, prompt, thread):
         client.beta.threads.messages.create(
@@ -112,7 +125,7 @@ class Controller:
             role="user",
             content=prompt
         )
-        return self.get_ai_res(thread)
+        self.get_ai_res(thread)
 
     '''
     def get_ai_res(self,prompt):
@@ -127,55 +140,55 @@ class Controller:
     def get_ai_res(self, thread):
         ### crteate file_id_list here
         file_list = []
+        test_file_name = "data/dynamic/carpark_availability/carpark_availability.json"
+        if is_json_file(test_file_name):
+            test_file = client.files.create(
+                        file = open(test_file_name, "rb"),
+                        purpose ="assistants"
+                    )
+            file_list = [test_file]
 
-        file_list.append(client.files.create(
-            file=open("model/data/data/dynamic/carpark_availability/carpark_availability.json", "rb"),
-            purpose="assistants"
-        ))
-        file_list.append(client.files.create(
-            file=open("model/data/data/dynamic/estimated_travel_time/estimated_travel_time.json", "rb"),
-            purpose="assistants"
-        ))
-        file_list.append(client.files.create(
-            file=open("model/data/data/dynamic/rainfall/rainfall.json", "rb"),
-            purpose="assistants"
-        ))
-        file_list.append(client.files.create(
-            file=open("model/data/data/dynamic/carpark_availability/carpark_availability.json", "rb"),
-            purpose="assistants"
-        ))
-        file_list.append(client.files.create(
-            file=open("model/data/data/dynamic/carpark_availability/carpark_availability.json", "rb"),
-            purpose="assistants"
-        ))
-        file_list.append(client.files.create(
-            file=open("model/data/data/dynamic/carpark_availability/carpark_availability.json", "rb"),
-            purpose="assistants"
-        ))
-        file_list.append(client.files.create(
-            file=open("model/data/data/dynamic/carpark_availability/carpark_availability.json", "rb"),
-            purpose="assistants"
-        ))
-        file_list.append(client.files.create(
-            file=open("model/data/data/dynamic/carpark_availability/carpark_availability.json", "rb"),
-            purpose="assistants"
-        ))
+        '''
+        for dirpath, dirnames, filenames in os.walk("data/dynamic"):
+            for filename in filenames:
+                if is_json_file(os.path.join(dirpath, filename)):
+                    file = client.files.create(
+                        file=open(os.path.join(dirpath, filename), "rb"),
+                        purpose="assistants"
+                    )
+                    file_list.append(file)
+
+
+        for dirpath, dirnames, filenames in os.walk("data/static"):
+            for filename in filenames:
+                if is_json_file(os.path.join(dirpath, filename)):
+                    file = client.files.create(
+                        file=open(os.path.join(dirpath, filename), "rb"),
+                        purpose="assistants"
+                    )
+                    file_list.append(file)
+        '''
+
         file_id_list = []
+
         for file in file_list:
             file_id_list.append(file.id)
 
         assistant = client.beta.assistants.create(
             name="transportGPT",
             description=ASSISTANT_INSTRUCTION,
-            model=MODEL,
-            tools=TOOLS,
-            file_ids=file_id_list
+            model= MODEL,
+            tools= TOOLS,
+            file_ids = file_id_list
         )
+        self.eventHandler = EventHandler()
 
         with self.client.beta.threads.runs.create_and_stream(
                 thread_id=thread.id,
                 assistant_id=assistant.id,
-                instructions=ASSISTANT_INSTRUCTION,
-                event_handler=EventHandler(),
+                instructions = ASSISTANT_INSTRUCTION,
+                event_handler = self.eventHandler,
         ) as stream:
             stream.until_done()
+            # self.eventHandler.isProcessing = False
+            print(f"\ndone event\n event_info: done one thread {thread.id}, served by assistant {assistant.id}")
