@@ -191,4 +191,4 @@ class Controller:
         ) as stream:
             stream.until_done()
             # self.eventHandler.isProcessing = False
-            print(f"\ndone event\n event_info: done one thread {thread.id}, served by assistant {assistant.id}")
+            print(f"\n\ndone event\n event_info: done one thread {thread.id}, served by assistant {assistant.id}\n\n")

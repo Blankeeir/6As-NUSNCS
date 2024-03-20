@@ -5,6 +5,7 @@ from flask import Flask, render_template
 from flask_restful import Api, reqparse
 from flask_cors import CORS
 from model.OpenAiModel.envVar import *
+import threading
 
 client = CLIENT
 
@@ -82,12 +83,52 @@ print(MainController.route_planner_res("hi", thread2))
 print(MainController.post_accident_bot_res("hi", thread1))
 '''
 print("\n\n\nnow try run route_info_res\n\n\n")
-MainController.route_info_res("hi", thread3)
-while(MainController.eventHandler.isProcessing):
-    print("yes")
-    print(MainController.eventHandler.output)
 
 if __name__ == '__main__':
     print("Starting server on port :80")
     app.run(host='0.0.0.0', port=80, debug=True)
+
+
+
+##########################
+# Test the event handler #
+##########################
+    
+
+def process_stream():
+    MainController.route_info_res("hi", thread3)
+
+def monitor_output():
+    i = 0
+    while MainController.eventHandler.isProcessing:
+        print(f"yes{i}")
+        print(MainController.eventHandler.output)
+        if i > 10:
+            break
+        i += 1
+
+# Create threads
+t1 = threading.Thread(target=process_stream)
+t2 = threading.Thread(target=monitor_output)
+
+# Start threads
+t1.start()
+t2.start()
+
+# Wait for both threads to finish
+t1.join()
+t2.join()
+
+
+'''
+MainController.route_info_res("hi", thread3)
+i = 0
+while(MainController.eventHandler.isProcessing):
+    print(f"yes{i}")
+    if i > 10:
+        break
+    print(MainController.eventHandler.output)
+    i += 1
+'''
+
 
