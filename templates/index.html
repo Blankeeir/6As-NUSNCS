@@ -287,7 +287,8 @@
             saveButton.style.display = 'none'; // Initially hide the Save button
             saveButton.addEventListener('click', () => {
                 messageDiv.blur();
-                messageDiv.contentEditable = false; // Disable editing in the message div
+                messageDiv.contentEditable = false;
+                messageDiv.textContent = messageDiv.textContent.trim();
                 saveButton.style.display = 'none'; // Hide Save button
                 cancelButton.style.display = 'none'; // Hide Cancel button
                 modificationIcon.style.display = 'block'; // Show modification icon
