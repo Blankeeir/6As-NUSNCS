@@ -66,7 +66,8 @@ class Controller:
                  f"This is basically a JSON object with two keys, 'start' and 'end', and the values are the starting and ending points. " \
                  f"Here is the input: \n" \
                  f"{input}"
-        return self.get_ai_res(prompt)
+        
+        return ChatCompletion().get_chat_response(prompt)
 
     def post_accident_bot_res(self, prompt, thread):
         accident_description = prompt
