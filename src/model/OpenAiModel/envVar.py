@@ -25,7 +25,7 @@ USER = "please provide an optimiized route with my current location delimited by
 EXAMPLE = "Example: "
 ASSISSTANT_INSTRUCTION = ''
 TOOLS = [{"type": "code_interpreter"}
-         , ]
+         ,{} ]
 
 # Code here for file upload (fine-tuning purpose)
 

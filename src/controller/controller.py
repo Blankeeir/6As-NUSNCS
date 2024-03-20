@@ -2,7 +2,7 @@ import os
 import json
 
 from model.data.run_dynamic_data import update
-from model.OpenAiModel.chatCompletion import *
+from chatCompletion import *
 from model.OpenAiModel.assistant import *
 
 class Controller:
@@ -65,6 +65,10 @@ class Controller:
 
         ## create several assistants for different purposes 
         pricingAssistant = Assistant()
+        run = client.beta.threads.runs.create(
+        thread_id = thread.id,
+        assistant_id= pricingAssistant.id
+)
 
         return pricingAssistant.get_assistant_response(prompt) + "";
 
