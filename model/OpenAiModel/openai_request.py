@@ -5,11 +5,11 @@ from model.OpenAiModel.chat_completion import ChatCompletion
 MODEL = "gpt-3.5-turbo"
 
 if __name__ == '__main__':
-    requestor = ChatCompletion(MODEL)
+    requester = ChatCompletion(MODEL)
 
     while 1:
         input_s = input('user input: ')
-        res = requestor.get_chat_response(input_s)
+        res = requester.get_chat_response(input_s)
         print(res)
 
         response = res

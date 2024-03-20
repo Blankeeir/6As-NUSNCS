@@ -40,5 +40,4 @@ message = client.beta.threads.messages.create(
     thread_id=thread.id,
     role="user",
     content="say hello"
-
 )
