@@ -23,7 +23,7 @@ SYSTEM = "When I ask for help to give me an optimal route from my current locati
     you should reply concisely with the optimized route and their"
 USER = "please provide an optimiized route with my current location delimited by the first pair of triple quotes and "
 EXAMPLE = "Example: "
-ASSISSTANT_INSTRUCTION = ''
+ASSISTANT_INSTRUCTION = 'Now you are TransportGPT, a chatbot that can help you with legal and medical advice using the latest data in a vehicular accident.'
 TOOLS = [{"type": "code_interpreter"}
         ,{"type": "retrieval"} ]
 

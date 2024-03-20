@@ -1,4 +1,5 @@
 from controller.controller import Controller
+from model.OpenAiModel.count_tokens import num_tokens_from_messages
 from web_api.dialogue_api import dialogue_api_handler
 from flask import Flask, render_template
 from flask_restful import Api, reqparse
@@ -22,15 +23,6 @@ thread3 = client.beta.threads.create()
 
 parser = reqparse.RequestParser()
 parser.add_argument('user_input',type=str,location='json')
-
-
-
-
-
-
-
-
-
 
 def respond(res):
     return {'code':0,'message':'success','res':res}
@@ -61,25 +53,30 @@ def chat():
 @app.route("/post_accident", methods=['POST'])
 def post_accident():
     userInput = parser.parse_args()['user_input']
-    if userInput:
+    if userInput and token_check(userInput):
         return respond(MainController.post_accident_bot_res(userInput, thread1))
     return respond("No input")
 
 @app.route("/route_planner", methods=['POST'])
 def route_planner():
     userInput = parser.parse_args()['user_input']
-    if userInput:
+    if userInput and token_check(userInput):
         return respond(MainController.route_planner_res(userInput, thread2))
     return respond("No input")
 
 @app.route("/route_info", methods=['POST'])
 def route_info():
     userInput = parser.parse_args()['user_input']
-    if userInput:
+    if userInput and token_check(userInput):
         return respond(MainController.route_info_res(userInput, thread3))
     return respond("No input")
 
+def token_check(message):
+    return len(message) < 4096
 
+print(MainController.route_info_res("hi", thread3))
+print(MainController.route_planner_res("hi", thread2))
+print(MainController.post_accident_bot_res("hi", thread1))
 
 if __name__ == '__main__':
     print("Starting server on port :80")
