@@ -1,6 +1,5 @@
 import json
 
-from main import client
 from model.OpenAiModel.chat_completion import ChatCompletion
 from model.OpenAiModel.envVar import *
 from model.data.run_dynamic_data import update # do not remove
@@ -10,8 +9,8 @@ import googlemaps
 from datetime import datetime
 import os
 
-
 class Controller:
+    client = CLIENT
     # Functions to get the static data from ../../data folder
     def get_static_data(self, file_path):
         try:
