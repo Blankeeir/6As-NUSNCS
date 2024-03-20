@@ -1,22 +1,31 @@
 from typing_extensions import override
 from openai import AssistantEventHandler
+from multiprocessing import Queue
  
 # First, we create a EventHandler class to define
 # how we want to handle the events in the response stream.
 
 class EventHandler(AssistantEventHandler):    
-    def __init__(self, controller):
-        self.controller = controller
-        self.controller.output = ""
+    def __init__(self):
+        self.queue = Queue()
         super().__init__()
+  
+    def get_consumer(self):
+        def consumer():
+            while True:
+                if self.queue.closed:
+                    break
+                yield self.queue.get()
 
+        return consumer
+    
     @override
     def on_text_created(self, text) -> None:
-        self.controller.output = f"\nassistant > "
+        self.queue.put(text)
 
     @override
     def on_text_delta(self, delta, snapshot):
-        self.controller.output = delta.value
+        self.queue.put(delta.value)
 
     def on_tool_call_created(self, tool_call):
         self.controller.output = f"\nassistant > {tool_call.type}\n"
@@ -30,7 +39,7 @@ class EventHandler(AssistantEventHandler):
                 self.controller.output = "\n\noutput >"
     
     def close(self):
-        self.controller.isProcessing = False
+        self.queue.close()
         super().close()
 
     '''
