@@ -166,7 +166,7 @@ class Controller:
 
         assistant = client.beta.assistants.create(
             name="transportGPT",
-            description=ASSISSTANT_INSTRUCTION,
+            description=ASSISTANT_INSTRUCTION,
             model=MODEL,
             tools=TOOLS,
             file_ids=file_id_list
@@ -175,7 +175,7 @@ class Controller:
         with self.client.beta.threads.runs.create_and_stream(
                 thread_id=thread.id,
                 assistant_id=assistant.id,
-                instructions=ASSISSTANT_INSTRUCTION,
+                instructions=ASSISTANT_INSTRUCTION,
                 event_handler=EventHandler(),
         ) as stream:
             stream.until_done()
