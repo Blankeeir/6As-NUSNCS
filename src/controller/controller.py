@@ -1,8 +1,8 @@
 import os
 import json
 
+from model.OpenAiModel.chat_completion import ChatCompletion
 from model.data.run_dynamic_data import update
-from model.OpenAiModel.chatCompletion import *
 from model.OpenAiModel.assistant import *
 
 class Controller:
