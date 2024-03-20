@@ -7,10 +7,12 @@ from envVar import *
 
 client = CLIENT
 
-client.files.create(
+file = client.files.create(
   file=open("finetuneDataset.jsonl", "rb"),
   purpose="fine-tune"
 )
+
+
 
 
 
