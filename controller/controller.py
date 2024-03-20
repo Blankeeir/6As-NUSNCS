@@ -80,17 +80,13 @@ class Controller:
                   f"and legal advice given my current situation"
 
         # add userinput to thread
-        client.beta.threads.runs.create(
-            thread_id=thread.id,
-            messages=[
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ]
+        client.beta.threads.messages.create(
+            thread.id,
+            role="user",
+            content=prompt
         )
 
-        return self.get_ai_res(thread.id)
+        return self.get_ai_res(thread)
 
     def greetings(self):
         greetings = f"Hello there! I'm TransportGPT, I have 3 versions of myself:\n" \
@@ -102,28 +98,20 @@ class Controller:
     def route_planner_res(self, prompt, thread):
         location = self.parse_input(prompt)
         ## prompt engineering according to choices
-        client.beta.threads.runs.create(
-            thread_id=thread.id,
-            messages=[
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ]
+        client.beta.threads.messages.create(
+            thread.id,
+            role="user",
+            content=prompt
         )
-        return self.get_ai_res(thread.id)
+        return self.get_ai_res(thread)
 
     def route_info_res(self, prompt, thread):
-        client.beta.threads.runs.create(
-            thread_id=thread.id,
-            messages=[
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ]
+        client.beta.threads.messages.create(
+            thread.id,
+            role="user",
+            content=prompt
         )
-        return self.get_ai_res(thread.id)
+        return self.get_ai_res(thread)
 
     '''
     def get_ai_res(self,prompt):
@@ -141,35 +129,35 @@ class Controller:
 
         file_list.append(client.files.create(
             file=open("model/data/data/dynamic/carpark_availability/carpark_availability.json", "rb"),
-            purpose="assistant"
+            purpose="assistants"
         ))
         file_list.append(client.files.create(
             file=open("model/data/data/dynamic/estimated_travel_time/estimated_travel_time.json", "rb"),
-            purpose="assistant"
+            purpose="assistants"
         ))
         file_list.append(client.files.create(
             file=open("model/data/data/dynamic/rainfall/rainfall.json", "rb"),
-            purpose="assistant"
+            purpose="assistants"
         ))
         file_list.append(client.files.create(
             file=open("model/data/data/dynamic/carpark_availability/carpark_availability.json", "rb"),
-            purpose="assistant"
+            purpose="assistants"
         ))
         file_list.append(client.files.create(
             file=open("model/data/data/dynamic/carpark_availability/carpark_availability.json", "rb"),
-            purpose="assistant"
+            purpose="assistants"
         ))
         file_list.append(client.files.create(
             file=open("model/data/data/dynamic/carpark_availability/carpark_availability.json", "rb"),
-            purpose="assistant"
+            purpose="assistants"
         ))
         file_list.append(client.files.create(
             file=open("model/data/data/dynamic/carpark_availability/carpark_availability.json", "rb"),
-            purpose="assistant"
+            purpose="assistants"
         ))
         file_list.append(client.files.create(
             file=open("model/data/data/dynamic/carpark_availability/carpark_availability.json", "rb"),
-            purpose="assistant"
+            purpose="assistants"
         ))
         file_id_list = []
         for file in file_list:
