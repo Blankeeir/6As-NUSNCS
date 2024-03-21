@@ -17,7 +17,6 @@ from model.OpenAiModel.imageGeneration import ImageGeneration
 client = CLIENT
 
 
-
 def is_json_file(filename):
     try:
         with open(filename, 'r') as f:
@@ -25,7 +24,7 @@ def is_json_file(filename):
         return True
     except json.JSONDecodeError:
         return False
-    
+
 
 class Controller:
     def __init__(self):
@@ -84,7 +83,7 @@ class Controller:
                  f"This is basically a JSON object with two keys, 'start' and 'end', and the values are the starting and ending points. " \
                  f"Here is the input: \n" \
                  f"{input}"
-        
+
         return ChatCompletion().get_chat_response(prompt)
 
     def post_accident_bot_res(self, prompt, thread):
@@ -151,9 +150,9 @@ class Controller:
             test_file_name = "data/dynamic/carpark_availability/carpark_availability.json"
             if is_json_file(test_file_name):
                 test_file = client.files.create(
-                            file = open(test_file_name, "rb"),
-                            purpose ="assistants"
-                        )
+                    file=open(test_file_name, "rb"),
+                    purpose="assistants"
+                )
                 file_list = [test_file]
 
             '''
@@ -185,34 +184,35 @@ class Controller:
             assistant = client.beta.assistants.create(
                 name="transportGPT",
                 description=ASSISTANT_INSTRUCTION,
-                model= MODEL,
-                tools= TOOLS,
-                file_ids = file_id_list
+                model=MODEL,
+                tools=TOOLS,
+                file_ids=file_id_list
             )
 
             eventHandler = EventHandler()
-            #consumer = eventHandler.get_consumer()
+
+            # consumer = eventHandler.get_consumer()
             def clean_up():
                 with self.client.beta.threads.runs.create_and_stream(
-                    thread_id=thread.id,
-                    assistant_id=assistant.id,
-                    instructions = ASSISTANT_INSTRUCTION,
-                    event_handler = eventHandler,
+                        thread_id=thread.id,
+                        assistant_id=assistant.id,
+                        instructions=ASSISTANT_INSTRUCTION,
+                        event_handler=eventHandler,
                 ) as stream:
                     stream.until_done()
                     self.isProcessing = False
-                    print(f"\n\ndone event\n event_info: done one thread {thread.id}, served by assistant {assistant.id}\n\n")
+                    print(
+                        f"\n\ndone event\n event_info: done one thread {thread.id}, served by assistant {assistant.id}\n\n")
                     eventHandler.close()
-            clean_up_thread = threading.Thread(target= clean_up)
+
+            clean_up_thread = threading.Thread(target=clean_up)
             clean_up_thread.start()
             return eventHandler.queue
         except Exception as e:
             print(f"Error in get_ai_res: {e}")
             return None
 
-           
-
-    def get_ai_image_url(self,prompt):
+    def get_ai_image_url(self, prompt):
         message = prompt
         prompt += "please generate an image with specific instruction in delimiter triple quotes"
         prompt += "'''Generate an image of a map. The map should show a route from location A to location B. The route should be highlighted and should take into account the user's preferences for weather conditions and pricing. The route should be the most cost-effective one that avoids areas with bad weather. The map should also show key landmarks and points of interest along the route.'''"
@@ -225,4 +225,3 @@ class Controller:
                         map image generated, shou base on the data files we'''"
 
         return ImageGeneration().get_image_response(message)
-        
