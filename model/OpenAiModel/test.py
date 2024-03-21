@@ -1,7 +1,7 @@
 import requests
 import json
-from chatCompletion import *
-from assistant import *
+from model.OpenAiModel.envVar import *
+from model.OpenAiModel.chat_completion import *
 
 
 
