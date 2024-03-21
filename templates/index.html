@@ -424,6 +424,7 @@
                             const processedMarkdown = marked.marked(markdownText);
                             responseDiv.lastChild.innerHTML = processedMarkdown;
                             responseDiv.lastChild.focus();
+                            eventSource.close();
                         };
                     } else {
                         outputDiv.innerHTML = "Your browser does not support Server-Sent Events.";
