@@ -55,10 +55,6 @@ def chat():
 
 user_input = "hi"
 global queue
-import uuid
-
-def uuid(input_string):
-    return uuid.uuid5(uuid.NAMESPACE_DNS, input_string)
 
 @app.route("/post_accident", methods=['POST'])
 def post_accident():
@@ -66,7 +62,7 @@ def post_accident():
     user_input = parser.parse_args()['user_input']
     if user_input and token_check(user_input):
         queue = MainController.post_accident_bot_res(user_input, thread1)
-        return respond(uuid(user_input))
+        return respond(user_input)
 
     return respond("No input"), 400
 
@@ -77,7 +73,7 @@ def route_planner():
 
     if user_input and token_check(user_input):
         queue = MainController.route_planner_res(user_input, thread2)
-        return respond(uuid(user_input))
+        return respond(user_input)
 
     return respond("No input"), 400
 
@@ -87,7 +83,7 @@ def route_info():
     user_input = parser.parse_args()['user_input']
     if user_input and token_check(user_input):
         queue = MainController.route_info_res(user_input, thread3)
-        return respond(uuid(user_input))
+        return respond(user_input)
 
     return respond("No input"), 400
 
