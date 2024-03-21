@@ -60,9 +60,6 @@ class Controller:
 
     # Functions to get the real time data from ../model/data folder
 
-    def get_ai_res(self, prompt):
-        return ChatCompletion(MODEL).get_chat_response(prompt)
-
     def parse_input(self, input) -> str:
         """
         This function takes an input string and constructs a prompt for the AI model. 
