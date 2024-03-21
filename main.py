@@ -89,6 +89,7 @@ def route_info():
 
 @app.route("/poc", methods=['GET'])
 def poc():
+    global queue
     def consumer():
         while True:
             try:
@@ -109,6 +110,10 @@ def stream():
             yield message  # Send data to frontend
             time.sleep(1)
     return Response(event_stream(), mimetype='text/event-stream')
+
+@app.route("/greeting", methods=['GET'])
+def greeting():
+    return Response()
 
 def token_check(message):
     return len(message) < 4096
