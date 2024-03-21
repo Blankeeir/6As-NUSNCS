@@ -2,7 +2,6 @@
 from openai import OpenAI
 import os
 import json
-
 from model.OpenAiModel.envVar import *
 
 
@@ -37,26 +36,20 @@ class ChatCompletion(object):
             model = self.model_name,
             temperature=0.8,
             n=1,  # how many choices to get
-            stream = True
         )
         # print(response)
-
+        return response.choices[0].message.content
     
-        for chunk in response:
-            print(chunk.choices[0].delta.content, end = "")
-'''
-if __name__ == '__main__':
-    requestor = ChatCompletion()
-    input_s = input('user input: ')
-    requestor.get_chat_response(input_s)
-    print(res)
 
-    response = res
+# if __name__ == '__main__':
+#     requestor = ChatCompletion()
+#     input_s = input('user input: ')
+#     res = requestor.get_chat_response(input_s)
+#     print(res)
 
-    print(f"chatGPT: {response}")
 
         # To get number of tokens
         # print(num_tokens_from_messages(messages, MODEL))
-'''
+
 
 

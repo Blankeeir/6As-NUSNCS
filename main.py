@@ -122,9 +122,9 @@ def token_check(message):
     return len(message) < 4096
 
 
-prompt_history = []
+prompt_history = ""
 
-@app.route("/image", methods = ['GET'])
+app.route("/image", methods = ['GET'])
 def image():
     image_url = MainController.get_ai_image_url(prompt_history)  # Replace with your image URL
     response = requests.get(image_url)
