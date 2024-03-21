@@ -112,6 +112,9 @@ class Controller:
 
     def route_planner_res(self, prompt, thread):
         location = self.parse_input(prompt)
+        loc = location if location else "Singapore"
+        prompt += f"\nI am at this location: " + loc + "\n"
+        prompt += f"please recommend me on the best route to take to my destination given my current start location and end destination"
         ## prompt engineering according to choices
         client.beta.threads.messages.create(
             thread.id,
