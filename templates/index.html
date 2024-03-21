@@ -365,17 +365,23 @@
         };
         clearButton.addEventListener('click', clear);
 
-        function sendRequest() {
+        function sendRequest(externalValue = null) {
             //const url = `http://localhost:80/${currentAssistant.id}`;
             const url = `http://localhost:80/poc`;
-            const userInputValue = userInput.value;
-            if (!userInputValue) {
+            if (externalValue === null) {
+                console.log("externalValue is null");
+            }
+            console.log(externalValue);
+            const userInputValue = externalValue == null ? userInput.value : externalValue;
+            console.log("userInputValue");
+            console.log(userInputValue);
+            if (userInputValue == '' || userInputValue === null) {
                 return;
             }
             const requestData = { "user_input": userInputValue };
             userInput.value = '';
-            addMessage(userInputValue, 'user');
-            const responseDiv = addMessage("Loading......\n");
+            obj = addMessage(userInputValue, 'user');
+            const responseDiv = addMessage("Loading......\n", 'assistant', obj).messageDiv;
             $.ajax({
                 url: `http://localhost:80/route_info`,
                 method: "POST",
@@ -436,8 +442,25 @@
                 }
             });
         }
+        function reload(lastUserNode, message) {
+            console.log('Reloading message:', message);
+            console.log('Last user node:', lastUserNode);
+            const children = Array.from(outPutField.children);
+            passLastNode = false;
+            for (let i = 0; i < children.length; i++) {
+                const child = children[i];
+                if (child === lastUserNode) {
+                    passLastNode = true;
+                }
+                if (passLastNode) {
+                    child.remove();
+                }
+            }
+            console.log(outPutField.children);
+            sendRequest(message);
+        }
 
-        function addMessage(message, role = 'assistant') {
+        function addMessage(message, role = 'assistant', obj = undefined) {
             const messageDiv = document.createElement('div');
             messageDiv.innerHTML += `<p>${message}</p>`;
             messageDiv.classList.add(role === 'user' ? 'message-user' : 'message-nonUser');
@@ -460,12 +483,9 @@
                 const reloadButton = document.createElement('button');
                 reloadButton.textContent = "Reload"; // Set the path to your modification icon
                 reloadButton.style.display = 'none'; // Initially hide the modification icon
-                reloadButton.addEventListener('click', () => {
-                    console.log("reload");
-                });
+                reloadButton.addEventListener('click', () => reload(obj.wrapper, obj.messageDiv.textContent));
                 invisiblePanel.appendChild(reloadButton);
                 toWrap = reloadButton;
-
             }
             else {
                 invisiblePanel.classList.add(`invisible-panel-user`);
@@ -485,15 +505,8 @@
                 const saveButton = document.createElement('button');
                 saveButton.textContent = 'Save';
                 saveButton.style.display = 'none'; // Initially hide the Save button
-                saveButton.addEventListener('click', () => {
-                    messageDiv.blur();
-                    messageDiv.contentEditable = false;
-                    messageDiv.textContent = messageDiv.textContent.trim();
-                    saveButton.style.display = 'none'; // Hide Save button
-                    cancelButton.style.display = 'none'; // Hide Cancel button
-                    modificationIcon.style.display = 'block'; // Show modification icon
-                    editMode = false;
-                });
+                // substring to get rid of the "EditSaveCancel" text
+                saveButton.addEventListener('click', () => reload(wrapper, messageDiv.textContent));
 
                 const cancelButton = document.createElement('button');
                 cancelButton.textContent = 'Cancel';
@@ -513,7 +526,6 @@
                 invisiblePanel.appendChild(cancelButton); // Append Cancel button to the invisible panel
                 toWrap = modificationIcon;
             }
-
             const wrapper = document.createElement('div');
             wrapper.classList.add(`wrapper`);
             wrapper.appendChild(messageContainer);
@@ -527,10 +539,10 @@
                 toWrap.style.display = 'none'; // Hide modification icon on mouseout
             });
             outputField.appendChild(wrapper);
-            return messageDiv;
+            return { messageDiv: messageDiv, wrapper: wrapper };
         }
 
-        document.getElementById('submitButton').addEventListener('click', sendRequest);
+        document.getElementById('submitButton').addEventListener('click', () => sendRequest());
         document.addEventListener('keydown', function (event) {
             if (event.key === 'Enter') {
                 sendRequest();
