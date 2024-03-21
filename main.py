@@ -58,7 +58,16 @@ def post_accident():
     userInput = parser.parse_args()['user_input']
     if userInput and token_check(userInput):
         queue = MainController.route_info_res(userInput, thread3)
-        return Response(consumer(queue), mimetype='text/event-stream')
+
+        def consumer():
+            while True:
+                try:
+                    message = queue.get()
+                    print(f"message is {message}")
+                    yield f"data: {message}\n\n"  # Yield messages in the correct format
+                except:
+                    break
+        return Response(consumer(), mimetype='text/event-stream')
     return respond("No input")
 
 @app.route("/route_planner", methods=['POST'])
@@ -66,7 +75,16 @@ def route_planner():
     userInput = parser.parse_args()['user_input']
     if userInput and token_check(userInput):
         queue = MainController.route_info_res(userInput, thread2)
-        return Response(consumer(queue), mimetype='text/event-stream')
+
+        def consumer():
+            while True:
+                try:
+                    message = queue.get()
+                    print(f"message is {message}")
+                    yield f"data: {message}\n\n"  # Yield messages in the correct format
+                except:
+                    break
+        return Response(consumer(), mimetype='text/event-stream')
     return respond("No input")
 
 @app.route("/route_info", methods=['POST'])
@@ -74,23 +92,32 @@ def route_info():
     userInput = parser.parse_args()['user_input']
     if userInput and token_check(userInput):
         queue = MainController.route_info_res(userInput, thread3)
-        return Response(consumer(queue), mimetype='text/event-stream')
+
+        def consumer():
+            while True:
+                try:
+                    message = queue.get()
+                    print(f"message is {message}")
+                    yield f"data: {message}\n\n"  # Yield messages in the correct format
+                except:
+                    break
+        return Response(consumer(), mimetype='text/event-stream')
     return respond("No input")
 
 @app.route("/poc", methods=['GET'])
 def poc():
     queue = MainController.route_info_res("Please introduce Singapore", thread3)
-    return Response(consumer(queue), mimetype='text/event-stream')
 
-def consumer(queue):
-    while True:
-        try:
-            message = queue.get()
-            print(f"message is {message}")
-            yield f"data: {message}\n\n"  # Yield messages in the correct format
-        except:
-            break
+    def consumer():
+        while True:
+            try:
+                message = queue.get()
+                print(f"message is {message}")
+                yield f"data: {message}\n\n"  # Yield messages in the correct format
+            except:
+                break
 
+    return Response(consumer(), mimetype='text/event-stream')
 @app.route("/stream", methods=['GET'])
 def stream():
     def event_stream():
