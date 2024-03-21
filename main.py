@@ -1,3 +1,5 @@
+import time
+from anyio import sleep
 from controller.controller import Controller
 from model.OpenAiModel.count_tokens import num_tokens_from_messages
 from web_api.dialogue_api import dialogue_api_handler
@@ -30,7 +32,7 @@ def respond(res):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index2.html")
 
 @app.route("/ping")
 def ping():
@@ -77,8 +79,26 @@ def route_info():
 
 @app.route("/poc", methods=['GET'])
 def poc():
-    stream = MainController.route_info_res("Please introduce Singapore", thread3)
-    return Response(stream(), mimetype='text/event-stream')
+    queue = MainController.route_info_res("Please introduce Singapore", thread3)
+    def consumer():
+        while True:
+            try:
+                message = queue.get()
+                print(f"message is {message}")
+                yield f"data: {message}\n\n"  # Yield messages in the correct format
+            except:
+                break 
+    return Response(consumer(), mimetype='text/event-stream')
+
+@app.route("/stream", methods=['GET'])
+def stream():
+    def event_stream():
+        for i in range(10):
+            message = f"data: {time.time()}\n\n"
+            print(f" the type of message is {type(message)}")
+            yield message  # Send data to frontend
+            time.sleep(1)
+    return Response(event_stream(), mimetype='text/event-stream')
 
 def token_check(message):
     return len(message) < 4096
