@@ -35,7 +35,7 @@
 
 
         .input-field {
-            width: 85%;
+            width: 80%;
             padding: 10px;
             margin-top: 10px;
             box-sizing: border-box;
@@ -53,23 +53,24 @@
         }
 
         .enter-button {
-            width: 10%;
+            padding: 10px 20px;
+            border: none;
             background-color: #007bff;
             color: #fff;
-            border: none;
+            border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
             margin-top: 10px;
-            /* Add margin to separate button from input field */
+        }
+
+        .enter-button:hover {
+            background-color: #0056b3;
         }
 
         .input-container {
             display: flex;
             padding: auto;
             height: 8%;
-        }
-
-        .enter-button:hover {
-            background-color: #0056b3;
         }
 
         .assistant {
