@@ -176,7 +176,7 @@ t2 = threading.Thread(target = monitor_output)
 
 # test image generation
 def test_image_generation(prompt_history):
-    image_url = Controller.get_ai_image_url(prompt_history)  # Replace with your image URL
+    image_url = MainController.get_ai_image_url(prompt_history)  # Replace with your image URL
     response = requests.get(image_url)
     if response.status_code == 200:
         image_data = response.content
@@ -186,7 +186,16 @@ def test_image_generation(prompt_history):
     else:
         return "Failed to retrieve image"
 
-print(test_image_generation(ChatCompletion().get_chat_response(input("based on your messages I will create an image for visualization. \n user input "))))
+
+#### test image generation delete later
+user_msg = input("user input:")
+print("Preparing response...")
+print(ChatCompletion().get_chat_response(user_msg))
+print("Preparing image...")
+print(test_image_generation(ChatCompletion().get_chat_response(user_msg)))
+
+
+###
 '''
 MainController.route_info_res("hi", thread3)
 i = 0

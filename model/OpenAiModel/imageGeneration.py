@@ -17,7 +17,7 @@ class ImageGeneration(object):
             model="dall-e-3",
             prompt="a white siamese cat",
             size= IMAGE_SIZE,
-            quality="‘hd’",
+            quality="hd",
             n=1,
         )
 
