@@ -339,12 +339,12 @@
         let eventSource;
         function sendRequest() {
             //const url = `http://localhost:80/${currentAssistant.id}`;
-            const url = `http://localhost:80/stream`;
+            const url = `http://localhost:80/poc`;
             const userInputValue = userInput.value;
             const requestData = { "user_input": userInputValue };
             userInput.value = '';
             addMessage(userInputValue, 'user');
-            const responseDiv = addMessage("debug");
+            const responseDiv = addMessage("debug\n");
             if (typeof (EventSource) !== 'undefined') {
                 if (eventSource) {
                     eventSource.close();
