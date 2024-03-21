@@ -270,11 +270,11 @@ def test_image_generation(prompt_history):
 ######################################
 # test image generation delete later #
 ######################################
-user_msg = input("user input:")
-print("Preparing response...")
-print(ChatCompletion().get_chat_response(user_msg))
-print("Preparing image...")
-print(test_image_generation(ChatCompletion().get_chat_response(user_msg)))
+# user_msg = input("user input:")
+# print("Preparing response...")
+# print(ChatCompletion().get_chat_response(user_msg))
+# print("Preparing image...")
+# print(test_image_generation(ChatCompletion().get_chat_response(user_msg)))
 
 
 if __name__ == '__main__':
