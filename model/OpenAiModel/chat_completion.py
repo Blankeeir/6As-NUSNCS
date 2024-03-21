@@ -44,19 +44,19 @@ class ChatCompletion(object):
     
         for chunk in response:
             print(chunk.choices[0].delta.content, end = "")
-
+'''
 if __name__ == '__main__':
     requestor = ChatCompletion()
     input_s = input('user input: ')
     requestor.get_chat_response(input_s)
-    '''print(res)
+    print(res)
 
     response = res
 
-    print(f"chatGPT: {response}")'''
+    print(f"chatGPT: {response}")
 
         # To get number of tokens
         # print(num_tokens_from_messages(messages, MODEL))
-
+'''
 
 

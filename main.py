@@ -8,6 +8,9 @@ from flask_restful import Api, reqparse
 from flask_cors import CORS
 from model.OpenAiModel.envVar import *
 import threading
+import requests
+from PIL import Image
+from io import BytesIO
 
 client = CLIENT
 
@@ -118,6 +121,8 @@ def poc():
                 break
 
     return Response(consumer(), mimetype='text/event-stream')
+
+
 @app.route("/stream", methods=['GET'])
 def stream():
     def event_stream():
@@ -130,6 +135,24 @@ def stream():
 
 def token_check(message):
     return len(message) < 4096
+
+
+prompt_history = []
+
+@app.route("/image", methods = ['GET'])
+def image():
+    image_url = MainController.get_ai_image_url(prompt_history)  # Replace with your image URL
+    response = requests.get(image_url)
+    if response.status_code == 200:
+        image_data = response.content
+        image = Image.open(BytesIO(image_data))
+        image.show()  # Display the image
+        return "Image displayed successfully"
+    else:
+        return "Failed to retrieve image"
+
+
+
 '''
 print(MainController.route_info_res("hi", thread3))
 print(MainController.route_planner_res("hi", thread2))
