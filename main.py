@@ -143,8 +143,23 @@ def image():
 
 
 
-def manage_thread():
-    return 
+def modify_thread_msg(modify_thread, message_id, new_content):
+    pre = ""
+    
+    
+    if modify_thread == 1:
+        delete_thread_id = thread1.id
+
+    elif modify_thread == 2:
+        delete_thread_id = thread1.id
+
+    elif modify_thread == 3:
+        delete_thread_id = thread1.id
+
+    # retrieve previous msg history
+    client.beta.threads.delete(delete_thread_id )
+
+    pass
 
 '''
 print(MainController.route_info_res("hi", thread3))
