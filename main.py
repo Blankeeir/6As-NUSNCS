@@ -1,3 +1,4 @@
+import json
 import time
 from anyio import sleep
 from controller.controller import Controller
@@ -97,8 +98,10 @@ def poc():
         while True:
             try:
                 message = queue.get()
-                print(f"message is {message}")
-                yield f"data: {message}\n"  # Yield messages in the correct format
+                json_object = {"message": message, "isParagraphEnd": False}
+                if message.endswith("\n\n"):
+                    json_object["isParagraphEnd"] = True 
+                yield f"data: {json.dumps(json_object)}\n\n"
             except:
                 break
 
