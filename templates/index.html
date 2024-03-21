@@ -384,6 +384,9 @@
                             const data = JSON.parse(event.data);
                             console.log('Received event data:', data);
                             if (currentParagraphEnd) {
+                                const markdownText = responseDiv.lastChild.textContent;
+                                const processedMarkdown = marked.marked(markdownText);
+                                responseDiv.lastChild.innerHTML = processedMarkdown;
                                 const newP = document.createElement('p');
                                 responseDiv.appendChild(newP);
                                 console.log('New paragraph created:', newP);
@@ -394,12 +397,12 @@
                             }
                             responseDiv.lastChild.textContent += data.message;
                             currentParagraphEnd = data.isParagraphEnd;
-                            console.log('Current paragraph end:', currentParagraphEnd);
                         };
 
                         eventSource.onerror = function (error) {
-                            console.error('EventSource error:', error);
-                            eventSource.close();
+                            const markdownText = responseDiv.lastChild.textContent;
+                            const processedMarkdown = marked.marked(markdownText);
+                            responseDiv.lastChild.innerHTML = processedMarkdown;
                         };
                     } else {
                         outputDiv.innerHTML = "Your browser does not support Server-Sent Events.";
