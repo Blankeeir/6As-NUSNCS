@@ -191,24 +191,21 @@ class Controller:
 
             eventHandler = EventHandler()
             #consumer = eventHandler.get_consumer()
-
-            # def clean_up():
-            #     with self.client.beta.threads.runs.create_and_stream(
-            #         thread_id=thread.id,
-            #         assistant_id=assistant.id,
-            #         instructions = ASSISTANT_INSTRUCTION,
-            #         event_handler = eventHandler,
-            #     ) as stream:
-            #         stream.until_done()
-            #         self.isProcessing = False
-            #         print(f"\n\ndone event\n event_info: done one thread {thread.id}, served by assistant {assistant.id}\n\n")
-            #         eventHandler.close()
-
+            def clean_up():
+                with self.client.beta.threads.runs.create_and_stream(
+                    thread_id=thread.id,
+                    assistant_id=assistant.id,
+                    instructions = ASSISTANT_INSTRUCTION,
+                    event_handler = eventHandler,
+                ) as stream:
+                    stream.until_done()
+                    self.isProcessing = False
+                    print(f"\n\ndone event\n event_info: done one thread {thread.id}, served by assistant {assistant.id}\n\n")
+                    eventHandler.close()
+            clean_up_thread = threading.Thread(target= clean_up)
             return eventHandler.queue
-
-        except Exception as e:
-            print(f"Error in get_ai_res: {e}")
-
+        finally: 
+            clean_up_thread.start()
            
 
     def get_ai_image_res(self,prompt):
