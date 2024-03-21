@@ -121,7 +121,7 @@ print(MainController.route_info_res("hi", thread3))
 print(MainController.route_planner_res("hi", thread2))
 print(MainController.post_accident_bot_res("hi", thread1))
 '''
-print("\n\n\nnow try run route_info_res\n\n\n")
+# print("\n\n\nnow try run route_info_res\n\n\n")
 
 
 ##########################
