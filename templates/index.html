@@ -340,13 +340,14 @@
         const outPutField = document.getElementById('outputField');
         let currentAssistant = document.getElementById('post_accident');
         const clearButton = document.getElementById('clearButton');
-        clearButton.addEventListener('click', () => {
+        let eventSource;
+        const clear = () => {
             if (eventSource) {
                 eventSource.close();
             }
             outPutField.innerHTML = '';
-        });
-        let eventSource;
+        };
+        clearButton.addEventListener('click', clear);
 
         function sendRequest() {
             //const url = `http://localhost:80/${currentAssistant.id}`;
@@ -523,6 +524,7 @@
                     // Get the name of the clicked assistant and log it
                     currentAssistant = this;
                     console.log('Selected assistant:', currentAssistant.id);
+                    clear();
                 });
             });
         });   
