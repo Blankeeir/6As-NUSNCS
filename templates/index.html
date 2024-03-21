@@ -242,6 +242,7 @@
         .wrapper {
             flex-wrap: wrap;
             gap: 20px;
+            margin-top: 10px;
         }
 
         .assistant-details {
@@ -295,7 +296,7 @@
             <div class="assistant" id="post_accident">
                 <div class="assistant-name">Post-Accident Support</div>
                 <div class="assistant-details">
-                    <img src="static/img/post-accident.png">
+                    <img src="static/img/post_accident.png">
                     <div class="assistant-description">Provides immediate post-accident support, offering guidance on
                         medical care and legal advice.</div>
                     <ul class="options-list">
@@ -308,7 +309,7 @@
             <div class="assistant" id="route_planner">
                 <div class="assistant-name">Route Planner</div>
                 <div class="assistant-details">
-                    <img src="static/img/route-planner.png">
+                    <img src="static/img/route_planner.png">
                     <div class="assistant-description">Optimizes your travel plans using real-time data on Singapore's
                         Electronic Road Pricing (ERP), weather conditions, and eco-friendly practices.</div>
                     <ul class="options-list">
@@ -321,7 +322,7 @@
             <div class="assistant" id="route_info">
                 <div class="assistant-name">Route Information</div>
                 <div class="assistant-details">
-                    <img src="static/img/route-information.png">
+                    <img src="static/img/route_info.png">
                     <div class="assistant-description">Uses prompt engineering to provide route information and images
                         tailored to your travel preferences.</div>
                     <ul class="options-list">
@@ -336,26 +337,51 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
+        const assistants = document.querySelectorAll('.assistant');
+        assistants.forEach(assistant => {
+            assistant.addEventListener('click', function () {
+                // Remove active class from all assistants
+                assistants.forEach(a => a.classList.remove('active'));
+
+                // Add active class to the clicked assistant
+                this.classList.add('active');
+
+                // Get the name of the clicked assistant and log it
+                currentAssistant = this;
+                console.log('Selected assistant:', currentAssistant.id);
+                clear();
+            });
+        });
         const userInput = document.getElementById('inputField');
         const outPutField = document.getElementById('outputField');
         let currentAssistant = document.getElementById('post_accident');
         const clearButton = document.getElementById('clearButton');
-        clearButton.addEventListener('click', () => {
+        let eventSource;
+        const clear = () => {
             if (eventSource) {
                 eventSource.close();
             }
             outPutField.innerHTML = '';
-        });
-        let eventSource;
+        };
+        clearButton.addEventListener('click', clear);
 
-        function sendRequest() {
+        function sendRequest(externalValue = null) {
             //const url = `http://localhost:80/${currentAssistant.id}`;
             const url = `http://localhost:80/poc`;
-            const userInputValue = userInput.value;
+            if (externalValue === null) {
+                console.log("externalValue is null");
+            }
+            console.log(externalValue);
+            const userInputValue = externalValue == null ? userInput.value : externalValue;
+            console.log("userInputValue");
+            console.log(userInputValue);
+            if (userInputValue == '' || userInputValue === null) {
+                return;
+            }
             const requestData = { "user_input": userInputValue };
             userInput.value = '';
-            addMessage(userInputValue, 'user');
-            const responseDiv = addMessage("Loading......\n");
+            obj = addMessage(userInputValue, 'user');
+            const responseDiv = addMessage("Loading......\n", 'assistant', obj).messageDiv;
             $.ajax({
                 url: `http://localhost:80/route_info`,
                 method: "POST",
@@ -405,6 +431,7 @@
                             const processedMarkdown = marked.marked(markdownText);
                             responseDiv.lastChild.innerHTML = processedMarkdown;
                             responseDiv.lastChild.focus();
+                            eventSource.close();
                         };
                     } else {
                         outputDiv.innerHTML = "Your browser does not support Server-Sent Events.";
@@ -415,14 +442,31 @@
                 }
             });
         }
+        function reload(lastUserNode, message) {
+            console.log('Reloading message:', message);
+            console.log('Last user node:', lastUserNode);
+            const children = Array.from(outPutField.children);
+            passLastNode = false;
+            for (let i = 0; i < children.length; i++) {
+                const child = children[i];
+                if (child === lastUserNode) {
+                    passLastNode = true;
+                }
+                if (passLastNode) {
+                    child.remove();
+                }
+            }
+            console.log(outPutField.children);
+            sendRequest(message);
+        }
 
-        function addMessage(message, role = 'assistant') {
+        function addMessage(message, role = 'assistant', obj = undefined) {
             const messageDiv = document.createElement('div');
             messageDiv.innerHTML += `<p>${message}</p>`;
             messageDiv.classList.add(role === 'user' ? 'message-user' : 'message-nonUser');
 
             const iconImg = document.createElement('img');
-            iconImg.src = role === 'user' ? 'path_to_user_icon.png' : 'path_to_assistant_icon.png';
+            iconImg.src = `static/img/${role == 'user' ? 'user' : currentAssistant.id}.png`;
             iconImg.alt = role === 'user' ? 'User Icon' : 'Assistant Icon';
             iconImg.classList.add('icon', `icon-${role}`);
 
@@ -439,12 +483,9 @@
                 const reloadButton = document.createElement('button');
                 reloadButton.textContent = "Reload"; // Set the path to your modification icon
                 reloadButton.style.display = 'none'; // Initially hide the modification icon
-                reloadButton.addEventListener('click', () => {
-                    console.log("reload");
-                });
+                reloadButton.addEventListener('click', () => reload(obj.wrapper, obj.messageDiv.textContent));
                 invisiblePanel.appendChild(reloadButton);
                 toWrap = reloadButton;
-
             }
             else {
                 invisiblePanel.classList.add(`invisible-panel-user`);
@@ -464,15 +505,8 @@
                 const saveButton = document.createElement('button');
                 saveButton.textContent = 'Save';
                 saveButton.style.display = 'none'; // Initially hide the Save button
-                saveButton.addEventListener('click', () => {
-                    messageDiv.blur();
-                    messageDiv.contentEditable = false;
-                    messageDiv.textContent = messageDiv.textContent.trim();
-                    saveButton.style.display = 'none'; // Hide Save button
-                    cancelButton.style.display = 'none'; // Hide Cancel button
-                    modificationIcon.style.display = 'block'; // Show modification icon
-                    editMode = false;
-                });
+                // substring to get rid of the "EditSaveCancel" text
+                saveButton.addEventListener('click', () => reload(wrapper, messageDiv.textContent));
 
                 const cancelButton = document.createElement('button');
                 cancelButton.textContent = 'Cancel';
@@ -492,7 +526,6 @@
                 invisiblePanel.appendChild(cancelButton); // Append Cancel button to the invisible panel
                 toWrap = modificationIcon;
             }
-
             const wrapper = document.createElement('div');
             wrapper.classList.add(`wrapper`);
             wrapper.appendChild(messageContainer);
@@ -506,26 +539,15 @@
                 toWrap.style.display = 'none'; // Hide modification icon on mouseout
             });
             outputField.appendChild(wrapper);
-            return messageDiv;
+            return { messageDiv: messageDiv, wrapper: wrapper };
         }
 
-        document.getElementById('submitButton').addEventListener('click', function () { sendRequest(); });
-        document.addEventListener('DOMContentLoaded', function () {
-            const assistants = document.querySelectorAll('.assistant');
-            assistants.forEach(assistant => {
-                assistant.addEventListener('click', function () {
-                    // Remove active class from all assistants
-                    assistants.forEach(a => a.classList.remove('active'));
-
-                    // Add active class to the clicked assistant
-                    this.classList.add('active');
-
-                    // Get the name of the clicked assistant and log it
-                    currentAssistant = this;
-                    console.log('Selected assistant:', currentAssistant.id);
-                });
-            });
-        });   
+        document.getElementById('submitButton').addEventListener('click', () => sendRequest());
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                sendRequest();
+            }
+        }); 
     </script>
 </body>
 
