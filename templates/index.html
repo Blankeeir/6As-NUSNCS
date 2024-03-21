@@ -387,6 +387,7 @@
                                 const markdownText = responseDiv.lastChild.textContent;
                                 const processedMarkdown = marked.marked(markdownText);
                                 responseDiv.lastChild.innerHTML = processedMarkdown;
+                                responseDiv.lastChild.focus();
                                 const newP = document.createElement('p');
                                 responseDiv.appendChild(newP);
                                 console.log('New paragraph created:', newP);
@@ -403,6 +404,7 @@
                             const markdownText = responseDiv.lastChild.textContent;
                             const processedMarkdown = marked.marked(markdownText);
                             responseDiv.lastChild.innerHTML = processedMarkdown;
+                            responseDiv.lastChild.focus();
                         };
                     } else {
                         outputDiv.innerHTML = "Your browser does not support Server-Sent Events.";
