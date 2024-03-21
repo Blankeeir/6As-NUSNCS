@@ -354,25 +354,43 @@
             userInput.value = '';
             addMessage(userInputValue, 'user');
             const responseDiv = addMessage("debug\n");
-            if (typeof (EventSource) !== 'undefined') {
-                if (eventSource) {
-                    eventSource.close();
+            $.ajax({
+                url: `http://localhost:80/route_info`,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                data: JSON.stringify({
+                    user_input: userInputValue
+                }),
+                success: function (result) {
+                    console.log(result.res);
+                    if (typeof (EventSource) !== 'undefined') {
+                        if (eventSource) {
+                            eventSource.close();
+                        }
+                        eventSource = new EventSource(`http://localhost:80/poc`);
+
+                        eventSource.onmessage = function (event) {
+                            const data = event.data;
+                            console.log('Received data:', data);
+                            responseDiv.textContent += data;
+                        };
+
+                        eventSource.onerror = function (error) {
+                            console.error('EventSource error:', error);
+                            eventSource.close();
+                        };
+                    } else {
+                        outputDiv.innerHTML = "Your browser does not support Server-Sent Events.";
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
                 }
-                eventSource = new EventSource(url);
-
-                eventSource.onmessage = function (event) {
-                    const data = event.data;
-                    console.log('Received data:', data);
-                    responseDiv.textContent += data;
-                };
-
-                eventSource.onerror = function (error) {
-                    console.error('EventSource error:', error);
-                    eventSource.close();
-                };
-            } else {
-                outputDiv.innerHTML = "Your browser does not support Server-Sent Events.";
-            }
+            });
+            addReply(message, 1);
+            $("#message-input").val("");
         }
 
         function addMessage(message, role = 'assistant') {
