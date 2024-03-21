@@ -35,7 +35,7 @@
 
 
         .input-field {
-            width: 85%;
+            width: 80%;
             padding: 10px;
             margin-top: 10px;
             box-sizing: border-box;
@@ -53,23 +53,24 @@
         }
 
         .enter-button {
-            width: 10%;
+            padding: 10px 20px;
+            border: none;
             background-color: #007bff;
             color: #fff;
-            border: none;
+            border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
             margin-top: 10px;
-            /* Add margin to separate button from input field */
+        }
+
+        .enter-button:hover {
+            background-color: #0056b3;
         }
 
         .input-container {
             display: flex;
             padding: auto;
             height: 8%;
-        }
-
-        .enter-button:hover {
-            background-color: #0056b3;
         }
 
         .assistant {
@@ -287,6 +288,7 @@
             <div class="input-container">
                 <input id="inputField" type="text" class="input-field" placeholder="Input Field">
                 <button id="submitButton" class="enter-button">Enter</button>
+                <button id="clearButton" class="enter-button">Clear</button>
             </div>
         </div>
         <div class="right-section">
@@ -336,6 +338,13 @@
         const userInput = document.getElementById('inputField');
         const outPutField = document.getElementById('outputField');
         let currentAssistant = document.getElementById('post_accident');
+        const clearButton = document.getElementById('clearButton');
+        clearButton.addEventListener('click', () => {
+            if (eventSource) {
+                eventSource.close();
+            }
+            outPutField.innerHTML = '';
+        });
         let eventSource;
         function sendRequest() {
             //const url = `http://localhost:80/${currentAssistant.id}`;
@@ -345,25 +354,43 @@
             userInput.value = '';
             addMessage(userInputValue, 'user');
             const responseDiv = addMessage("debug\n");
-            if (typeof (EventSource) !== 'undefined') {
-                if (eventSource) {
-                    eventSource.close();
+            $.ajax({
+                url: `http://localhost:80/route_info`,
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                data: JSON.stringify({
+                    user_input: userInputValue
+                }),
+                success: function (result) {
+                    console.log(result.res);
+                    if (typeof (EventSource) !== 'undefined') {
+                        if (eventSource) {
+                            eventSource.close();
+                        }
+                        eventSource = new EventSource(`http://localhost:80/poc`);
+
+                        eventSource.onmessage = function (event) {
+                            const data = event.data;
+                            console.log('Received data:', data);
+                            responseDiv.textContent += data;
+                        };
+
+                        eventSource.onerror = function (error) {
+                            console.error('EventSource error:', error);
+                            eventSource.close();
+                        };
+                    } else {
+                        outputDiv.innerHTML = "Your browser does not support Server-Sent Events.";
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
                 }
-                eventSource = new EventSource(url);
-
-                eventSource.onmessage = function (event) {
-                    const data = event.data;
-                    console.log('Received data:', data);
-                    responseDiv.textContent += data;
-                };
-
-                eventSource.onerror = function (error) {
-                    console.error('EventSource error:', error);
-                    eventSource.close();
-                };
-            } else {
-                outputDiv.innerHTML = "Your browser does not support Server-Sent Events.";
-            }
+            });
+            addReply(message, 1);
+            $("#message-input").val("");
         }
 
         function addMessage(message, role = 'assistant') {

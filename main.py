@@ -56,61 +56,43 @@ def chat():
         return respond(MainController.output)
     return respond("No input"), 400
 
+user_input = "hi"
+global queue
+
 @app.route("/post_accident", methods=['POST'])
 def post_accident():
-    userInput = parser.parse_args()['user_input']
-    if userInput and token_check(userInput):
-        queue = MainController.route_info_res(userInput, thread3)
+    global queue
+    user_input = parser.parse_args()['user_input']
+    if user_input and token_check(user_input):
+        queue = MainController.post_accident_bot_res(user_input, thread1)
+        return respond(user_input)
 
-        def consumer():
-            while True:
-                try:
-                    message = queue.get()
-                    print(f"message is {message}")
-                    yield f"data: {message}\n\n"  # Yield messages in the correct format
-                except:
-                    break
-        return Response(consumer(), mimetype='text/event-stream')
-    return respond("No input")
+    return respond("No input"), 400
 
 @app.route("/route_planner", methods=['POST'])
 def route_planner():
-    userInput = parser.parse_args()['user_input']
-    if userInput and token_check(userInput):
-        queue = MainController.route_info_res(userInput, thread2)
+    global queue
+    user_input = parser.parse_args()['user_input']
 
-        def consumer():
-            while True:
-                try:
-                    message = queue.get()
-                    print(f"message is {message}")
-                    yield f"data: {message}\n\n"  # Yield messages in the correct format
-                except:
-                    break
-        return Response(consumer(), mimetype='text/event-stream')
-    return respond("No input")
+    if user_input and token_check(user_input):
+        queue = MainController.route_planner_res(user_input, thread2)
+        return respond(user_input)
+
+    return respond("No input"), 400
 
 @app.route("/route_info", methods=['POST'])
 def route_info():
-    userInput = parser.parse_args()['user_input']
-    if userInput and token_check(userInput):
-        queue = MainController.route_info_res(userInput, thread3)
+    global queue
+    user_input = parser.parse_args()['user_input']
+    if user_input and token_check(user_input):
+        queue = MainController.route_info_res(user_input, thread3)
+        return respond(user_input)
 
-        def consumer():
-            while True:
-                try:
-                    message = queue.get()
-                    print(f"message is {message}")
-                    yield f"data: {message}\n\n"  # Yield messages in the correct format
-                except:
-                    break
-        return Response(consumer(), mimetype='text/event-stream')
-    return respond("No input")
+    return respond("No input"), 400
 
 @app.route("/poc", methods=['GET'])
 def poc():
-    queue = MainController.route_info_res("Please introduce Singapore", thread3)
-
+    global queue
     def consumer():
         while True:
             try:
@@ -122,7 +104,6 @@ def poc():
 
     return Response(consumer(), mimetype='text/event-stream')
 
-
 @app.route("/stream", methods=['GET'])
 def stream():
     def event_stream():
@@ -132,6 +113,10 @@ def stream():
             yield message  # Send data to frontend
             time.sleep(1)
     return Response(event_stream(), mimetype='text/event-stream')
+
+@app.route("/greeting", methods=['GET'])
+def greeting():
+    return Response(MainController.greetings())
 
 def token_check(message):
     return len(message) < 4096
@@ -158,7 +143,7 @@ print(MainController.route_info_res("hi", thread3))
 print(MainController.route_planner_res("hi", thread2))
 print(MainController.post_accident_bot_res("hi", thread1))
 '''
-print("\n\n\nnow try run route_info_res\n\n\n")
+# print("\n\n\nnow try run route_info_res\n\n\n")
 
 
 ##########################
