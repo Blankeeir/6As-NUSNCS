@@ -143,7 +143,7 @@ class Controller:
         return directions_result
 
     def get_ai_res(self, thread):
-        try: 
+        try:
             self.output = ""
             self.isProcessing = True
 
@@ -204,9 +204,12 @@ class Controller:
                     print(f"\n\ndone event\n event_info: done one thread {thread.id}, served by assistant {assistant.id}\n\n")
                     eventHandler.close()
             clean_up_thread = threading.Thread(target= clean_up)
-            return eventHandler.queue
-        finally: 
             clean_up_thread.start()
+            return eventHandler.queue
+        except Exception as e:
+            print(f"Error in get_ai_res: {e}")
+            return None
+
            
 
     def get_ai_image_url(self,prompt):
