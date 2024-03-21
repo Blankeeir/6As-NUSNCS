@@ -242,6 +242,7 @@
         .wrapper {
             flex-wrap: wrap;
             gap: 20px;
+            margin-top: 10px;
         }
 
         .assistant-details {
@@ -295,7 +296,7 @@
             <div class="assistant" id="post_accident">
                 <div class="assistant-name">Post-Accident Support</div>
                 <div class="assistant-details">
-                    <img src="static/img/post-accident.png">
+                    <img src="static/img/post_accident.png">
                     <div class="assistant-description">Provides immediate post-accident support, offering guidance on
                         medical care and legal advice.</div>
                     <ul class="options-list">
@@ -308,7 +309,7 @@
             <div class="assistant" id="route_planner">
                 <div class="assistant-name">Route Planner</div>
                 <div class="assistant-details">
-                    <img src="static/img/route-planner.png">
+                    <img src="static/img/route_planner.png">
                     <div class="assistant-description">Optimizes your travel plans using real-time data on Singapore's
                         Electronic Road Pricing (ERP), weather conditions, and eco-friendly practices.</div>
                     <ul class="options-list">
@@ -321,7 +322,7 @@
             <div class="assistant" id="route_info">
                 <div class="assistant-name">Route Information</div>
                 <div class="assistant-details">
-                    <img src="static/img/route-information.png">
+                    <img src="static/img/route_info.png">
                     <div class="assistant-description">Uses prompt engineering to provide route information and images
                         tailored to your travel preferences.</div>
                     <ul class="options-list">
@@ -442,7 +443,7 @@
             messageDiv.classList.add(role === 'user' ? 'message-user' : 'message-nonUser');
 
             const iconImg = document.createElement('img');
-            iconImg.src = role === 'user' ? 'path_to_user_icon.png' : 'path_to_assistant_icon.png';
+            iconImg.src = `static/img/${role == 'user' ? 'user' : currentAssistant.id}.png`;
             iconImg.alt = role === 'user' ? 'User Icon' : 'Assistant Icon';
             iconImg.classList.add('icon', `icon-${role}`);
 
