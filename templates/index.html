@@ -336,6 +336,21 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
+        const assistants = document.querySelectorAll('.assistant');
+        assistants.forEach(assistant => {
+            assistant.addEventListener('click', function () {
+                // Remove active class from all assistants
+                assistants.forEach(a => a.classList.remove('active'));
+
+                // Add active class to the clicked assistant
+                this.classList.add('active');
+
+                // Get the name of the clicked assistant and log it
+                currentAssistant = this;
+                console.log('Selected assistant:', currentAssistant.id);
+                clear();
+            });
+        });
         const userInput = document.getElementById('inputField');
         const outPutField = document.getElementById('outputField');
         let currentAssistant = document.getElementById('post_accident');
@@ -353,6 +368,9 @@
             //const url = `http://localhost:80/${currentAssistant.id}`;
             const url = `http://localhost:80/poc`;
             const userInputValue = userInput.value;
+            if (!userInputValue) {
+                return;
+            }
             const requestData = { "user_input": userInputValue };
             userInput.value = '';
             addMessage(userInputValue, 'user');
@@ -510,24 +528,12 @@
             return messageDiv;
         }
 
-        document.getElementById('submitButton').addEventListener('click', function () { sendRequest(); });
-        document.addEventListener('DOMContentLoaded', function () {
-            const assistants = document.querySelectorAll('.assistant');
-            assistants.forEach(assistant => {
-                assistant.addEventListener('click', function () {
-                    // Remove active class from all assistants
-                    assistants.forEach(a => a.classList.remove('active'));
-
-                    // Add active class to the clicked assistant
-                    this.classList.add('active');
-
-                    // Get the name of the clicked assistant and log it
-                    currentAssistant = this;
-                    console.log('Selected assistant:', currentAssistant.id);
-                    clear();
-                });
-            });
-        });   
+        document.getElementById('submitButton').addEventListener('click', sendRequest);
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                sendRequest();
+            }
+        }); 
     </script>
 </body>
 
