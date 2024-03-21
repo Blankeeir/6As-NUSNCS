@@ -27,6 +27,8 @@ ASSISTANT_INSTRUCTION = 'Now you are TransportGPT, a chatbot that can help you w
 TOOLS = [{"type": "code_interpreter"}
         ,{"type": "retrieval"} ]
 
+IMAGE_SIZE = "1024x1024"
+
 # Code here for file upload (fine-tuning purpose)
 
 # Code here for dynamic pricing model
