@@ -113,7 +113,7 @@ def stream():
 
 @app.route("/greeting", methods=['GET'])
 def greeting():
-    return Response()
+    return Response(MainController.greetings(), mimetype='text/event-stream')
 
 def token_check(message):
     return len(message) < 4096
