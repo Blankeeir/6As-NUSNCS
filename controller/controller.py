@@ -207,3 +207,6 @@ class Controller:
         finally: 
             clean_up_thread.start()
            
+
+    def get_ai_image_res(self,prompt):
+        return None
