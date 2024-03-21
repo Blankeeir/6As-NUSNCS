@@ -15,7 +15,7 @@ class ImageGeneration(object):
     def get_image_response(self, message):
         response = client.images.generate(
             model="dall-e-3",
-            prompt="a white siamese cat",
+            prompt= message,
             size= IMAGE_SIZE,
             quality="hd",
             n=1,

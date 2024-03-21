@@ -143,6 +143,9 @@ def image():
 
 
 
+def manage_thread():
+    return 
+
 '''
 print(MainController.route_info_res("hi", thread3))
 print(MainController.route_planner_res("hi", thread2))
