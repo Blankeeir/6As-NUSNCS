@@ -334,6 +334,7 @@
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
         const userInput = document.getElementById('inputField');
         const outPutField = document.getElementById('outputField');
@@ -366,6 +367,7 @@
                 }),
                 success: function (result) {
                     console.log(result.res);
+                    let currentParagraphEnd = false;
                     if (typeof (EventSource) !== 'undefined') {
                         if (eventSource) {
                             eventSource.close();
@@ -374,19 +376,35 @@
 
                         eventSource.onopen = function (event) {
                             console.log('Connection opened.');
-                            responseDiv.innerHTML = '';
+                            const lastParagraph = responseDiv.lastChild;
+                            lastParagraph.textContent = ``;
                         };
 
                         eventSource.onmessage = function (event) {
-                            const data = event.data.split('\n').join('');
-                            console.log('Received data:');
-                            console.log(`|${data}|`);
-                            responseDiv.innerHTML += `<p>${data.trim()}</p>`;
+                            const data = JSON.parse(event.data);
+                            console.log('Received event data:', data);
+                            if (currentParagraphEnd) {
+                                const markdownText = responseDiv.lastChild.textContent;
+                                const processedMarkdown = marked.marked(markdownText);
+                                responseDiv.lastChild.innerHTML = processedMarkdown;
+                                responseDiv.lastChild.focus();
+                                const newP = document.createElement('p');
+                                responseDiv.appendChild(newP);
+                                console.log('New paragraph created:', newP);
+                                if (responseDiv.lastChild !== newP) {
+                                    console.log('New paragraph not added to the end of the response div.');
+                                }
+                                currentParagraphEnd = false;
+                            }
+                            responseDiv.lastChild.textContent += data.message;
+                            currentParagraphEnd = data.isParagraphEnd;
                         };
 
                         eventSource.onerror = function (error) {
-                            console.error('EventSource error:', error);
-                            eventSource.close();
+                            const markdownText = responseDiv.lastChild.textContent;
+                            const processedMarkdown = marked.marked(markdownText);
+                            responseDiv.lastChild.innerHTML = processedMarkdown;
+                            responseDiv.lastChild.focus();
                         };
                     } else {
                         outputDiv.innerHTML = "Your browser does not support Server-Sent Events.";
@@ -400,7 +418,7 @@
 
         function addMessage(message, role = 'assistant') {
             const messageDiv = document.createElement('div');
-            messageDiv.textContent = message;
+            messageDiv.innerHTML += `<p>${message}</p>`;
             messageDiv.classList.add(role === 'user' ? 'message-user' : 'message-nonUser');
 
             const iconImg = document.createElement('img');
