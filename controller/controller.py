@@ -25,12 +25,54 @@ def is_json_file(filename):
     except json.JSONDecodeError:
         return False
 
+def generate_static_fileID_list():
+            # if is_json_file(test_file_name):
+            #     test_file = client.files.create(
+            #         file=open(test_file_name, "rb"),
+            #         purpose="assistants"
+            #     )
+            #     file_list = [test_file]
+    file_list = []
+    for dirpath, dirnames, filenames in os.walk("data/static"):
+        for filename in filenames:
+            if is_json_file(os.path.join(dirpath, filename)):
+                file = client.files.create(
+                    file=open(os.path.join(dirpath, filename), "rb"),
+                    purpose="assistants"
+                )
+                file_list.append(file)
+
+def generate_dynamic_fileID_list():
+    file_list = []
+
+    for dirpath, dirnames, filenames in os.walk("data/dynamic"):
+        for filename in filenames:
+            if is_json_file(os.path.join(dirpath, filename)):
+                file = client.files.create(
+                    file=open(os.path.join(dirpath, filename), "rb"),
+                    purpose="assistants"
+                )
+                file_list.append(file)
+    file_id_list = []
+    for file in file_list:
+        file_id_list.append(file.id)
+    return file_id_list
+
+
+
 
 class Controller:
     def __init__(self):
         self.client = CLIENT
         self.output = ""
         self.isProcessing = True
+        self.assistant = client.beta.assistants.create(
+            name="transportGPT",
+            description=ASSISTANT_INSTRUCTION,
+            model= MODEL,
+            tools= TOOLS,
+            file_ids = generate_static_fileID_list()
+        )
 
     # Functions to get the static data from ../../data folder
     def get_static_data(self, file_path):
@@ -146,63 +188,20 @@ class Controller:
             self.output = ""
             self.isProcessing = True
 
-            file_list = []
-            test_file_name = "data/dynamic/carpark_availability/carpark_availability.json"
-            if is_json_file(test_file_name):
-                test_file = client.files.create(
-                    file=open(test_file_name, "rb"),
-                    purpose="assistants"
-                )
-                file_list = [test_file]
-
-            '''
-            for dirpath, dirnames, filenames in os.walk("data/dynamic"):
-                for filename in filenames:
-                    if is_json_file(os.path.join(dirpath, filename)):
-                        file = client.files.create(
-                            file=open(os.path.join(dirpath, filename), "rb"),
-                            purpose="assistants"
-                        )
-                        file_list.append(file)
-
-
-            for dirpath, dirnames, filenames in os.walk("data/static"):
-                for filename in filenames:
-                    if is_json_file(os.path.join(dirpath, filename)):
-                        file = client.files.create(
-                            file=open(os.path.join(dirpath, filename), "rb"),
-                            purpose="assistants"
-                        )
-                        file_list.append(file)
-            '''
-
-            file_id_list = []
-
-            for file in file_list:
-                file_id_list.append(file.id)
-
-            assistant = client.beta.assistants.create(
-                name="transportGPT",
-                description=ASSISTANT_INSTRUCTION,
-                model=MODEL,
-                tools=TOOLS,
-                file_ids=file_id_list
-            )
-
             eventHandler = EventHandler()
 
             # consumer = eventHandler.get_consumer()
             def clean_up():
                 with self.client.beta.threads.runs.create_and_stream(
                         thread_id=thread.id,
-                        assistant_id=assistant.id,
-                        instructions=ASSISTANT_INSTRUCTION,
-                        event_handler=eventHandler,
+                        assistant_id = self.assistant.id,
+                        instructions= ASSISTANT_INSTRUCTION,
+                        event_handler= eventHandler,
                 ) as stream:
                     stream.until_done()
                     self.isProcessing = False
                     print(
-                        f"\n\ndone event\n event_info: done one thread {thread.id}, served by assistant {assistant.id}\n\n")
+                        f"\n\ndone event\n event_info: done one thread {thread.id}, served by assistant {self.assistant.id}\n\n")
                     eventHandler.close()
 
             clean_up_thread = threading.Thread(target=clean_up)
