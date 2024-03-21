@@ -14,10 +14,7 @@ class EventHandler(AssistantEventHandler):
       def consumer():
         while True:
           message = self.queue.get()
-          if isinstance(message, str):
-            yield message.encode('utf-8')  # Convert message to bytes
-          else:
-            yield message
+          yield f"{message}"
 
       return consumer
     

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSE Example</title>
+</head>
+<body>
+  <div id="output"></div>
+  <button id="fetchData">poc</button>
+  <button id="demo">stream</button>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const outputDiv = document.getElementById('output');
+      const fetchDataButton = document.getElementById('fetchData');
+      const demoButton = document.getElementById('demo');
+      let eventSource;
+
+      function handler(url) {
+        return () => {
+        if (typeof(EventSource) !== 'undefined') {
+          if (eventSource) {
+            eventSource.close();
+          }
+          eventSource = new EventSource(url);
+
+          eventSource.onmessage = function(event) {
+            const data = event.data;
+            console.log('Received data:', data);
+            outputDiv.textContent += data;
+          };
+
+          eventSource.onerror = function(error) {
+            console.error('EventSource error:', error);
+            eventSource.close();
+          };
+        } else {
+          outputDiv.innerHTML = "Your browser does not support Server-Sent Events.";
+        }
+      }
+      }
+      demoButton.addEventListener('click', handler('/stream'));
+
+      fetchDataButton.addEventListener('click', handler('/poc'));
+        // Handle fetching data from another endpoint if needed
+    });
+  </script>
+</body>
+</html>

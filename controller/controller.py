@@ -190,7 +190,7 @@ class Controller:
             )
 
             eventHandler = EventHandler()
-            consumer = eventHandler.get_consumer()
+            #consumer = eventHandler.get_consumer()
             def clean_up():
                 with self.client.beta.threads.runs.create_and_stream(
                     thread_id=thread.id,
@@ -203,7 +203,7 @@ class Controller:
                     print(f"\n\ndone event\n event_info: done one thread {thread.id}, served by assistant {assistant.id}\n\n")
                     eventHandler.close()
             clean_up_thread = threading.Thread(target= clean_up)
-            return consumer
+            return eventHandler.queue
         finally: 
             clean_up_thread.start()
            
