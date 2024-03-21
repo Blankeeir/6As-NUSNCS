@@ -23,7 +23,13 @@ CORS(app)
 
 MainController = Controller()
 dialogue_api_hl = dialogue_api_handler()
+global thread1
+global thread2
+global thread3
 
+
+
+_test_thread = client.beta.threads.create()
 thread1 = client.beta.threads.create()
 thread2 = client.beta.threads.create()
 thread3 = client.beta.threads.create()
@@ -144,23 +150,62 @@ def image():
 
 
 def modify_thread_msg(modify_thread, message_id, new_content):
-    pre = ""
-    
+    pre = f"the user modify a message. here is the new message: {new_content}"
+    pre += "please base your reply on the thread messages newly created which are history messages and provide modified answer."
     
     if modify_thread == 1:
-        delete_thread_id = thread1.id
+        curr_thread_id = thread1.id
+        # modify thread 1 (create new thread for each modification)
+        thread_messages = client.beta.threads.messages.list(curr_thread_id)
+        create_new_thread_messages(modify_thread, message_id, pre + new_content, thread_messages)
+
 
     elif modify_thread == 2:
-        delete_thread_id = thread1.id
+        curr_thread_id = thread2.id
+        # modify thread 2
+        thread_messages = client.beta.threads.messages.list(curr_thread_id)
+        create_new_thread_messages(modify_thread, message_id, pre + new_content, thread_messages)
 
     elif modify_thread == 3:
-        delete_thread_id = thread1.id
+        curr_thread_id = thread3.id
+        # modify thread 3
+        thread_messages = client.beta.threads.messages.list(curr_thread_id)
+        create_new_thread_messages(modify_thread, message_id, pre + new_content, thread_messages)
+    
+    else:
+        curr_thread_id = _test_thread.id
+        thread_messages = client.beta.threads.messages.list(curr_thread_id)
+        create_new_thread_messages(modify_thread, message_id, pre + new_content, thread_messages)
+
 
     # retrieve previous msg history
-    client.beta.threads.delete(delete_thread_id )
+    client.beta.threads.delete(curr_thread_id)
 
     pass
 
+
+
+
+def create_new_thread_messages(modify_thread, message_id, new_content, thread_messages):
+    new_thread_messages = []
+    for message in thread_messages:
+        if message.id != message_id:
+            new_thread_messages.append(message)
+        else:
+            break
+    if modify_thread == 1:
+        thread1 = client.beta.threads.create(new_thread_messages)
+        client.beta.threads.messages.create(thread1.id, role="user", content = new_content)
+    elif modify_thread == 2:
+        thread2 = client.beta.threads.create(new_thread_messages)
+        client.beta.threads.messages.create(thread2.id, role="user", content = new_content)
+    elif modify_thread == 3:
+        thread3 = client.beta.threads.create(new_thread_messages)
+        client.beta.threads.messages.create(thread3.id, role="user", content = new_content)
+    else:
+        _test_thread = client.beta.threads.create(new_thread_messages)
+        client.beta.threads.messages.create(_test_thread.id, role="user", content = new_content)
+        print(_test_thread)
 '''
 print(MainController.route_info_res("hi", thread3))
 print(MainController.route_planner_res("hi", thread2))
@@ -171,22 +216,22 @@ print(MainController.post_accident_bot_res("hi", thread1))
 
 ##########################
 # Test the event handler #
-##########################
+# ##########################
 
 
-def process_stream():
-    MainController.route_info_res("hi, please provide specific road info on a rainy day in singapore, better include pricing models", thread3)
+# def process_stream():
+#     MainController.route_info_res("hi, please provide specific road info on a rainy day in singapore, better include pricing models", thread3)
 
-def monitor_output():
-    output = ""
-    while MainController.isProcessing :
-        if MainController.output and MainController.output != output:
-            print(MainController.output, end = "")
-            output = MainController.output
+# def monitor_output():
+#     output = ""
+#     while MainController.isProcessing :
+#         if MainController.output and MainController.output != output:
+#             print(MainController.output, end = "")
+#             output = MainController.output
 
-# Create threads
-t1 = threading.Thread(target = process_stream)
-t2 = threading.Thread(target = monitor_output)
+# # Create threads
+# t1 = threading.Thread(target = process_stream)
+# t2 = threading.Thread(target = monitor_output)
 
 # Start threads
 #t1.start()
@@ -204,32 +249,14 @@ def test_image_generation(prompt_history):
     else:
         return "Failed to retrieve image"
 
-
-#### test image generation delete later
+######################################
+# test image generation delete later #
+######################################
 user_msg = input("user input:")
 print("Preparing response...")
 print(ChatCompletion().get_chat_response(user_msg))
 print("Preparing image...")
 print(test_image_generation(ChatCompletion().get_chat_response(user_msg)))
-
-
-###
-'''
-MainController.route_info_res("hi", thread3)
-i = 0
-while(MainController.eventHandler.isProcessing):
-    print(f"yes{i}")
-    if i > 10:
-        break
-    print(MainController.eventHandler.output)
-    i += 1
-'''
-
-
-
-
-
-
 
 
 if __name__ == '__main__':

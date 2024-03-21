@@ -12,7 +12,12 @@ fine_tuned_model = "gpt-4-1106-preview"
 
 
 
+
+
+
+global MODEL
 MODEL = fine_tuned_model
+
 
 CLIENT = OpenAI(
             api_key = os.environ.get("OPENAI_API_KEY")  # see .env
