@@ -346,6 +346,7 @@
             outPutField.innerHTML = '';
         });
         let eventSource;
+
         function sendRequest() {
             //const url = `http://localhost:80/${currentAssistant.id}`;
             const url = `http://localhost:80/poc`;
@@ -353,7 +354,7 @@
             const requestData = { "user_input": userInputValue };
             userInput.value = '';
             addMessage(userInputValue, 'user');
-            const responseDiv = addMessage("debug\n");
+            const responseDiv = addMessage("Loading......\n");
             $.ajax({
                 url: `http://localhost:80/route_info`,
                 method: "POST",
@@ -370,6 +371,11 @@
                             eventSource.close();
                         }
                         eventSource = new EventSource(`http://localhost:80/poc`);
+
+                        eventSource.onopen = function (event) {
+                            console.log('Connection opened.');
+                            responseDiv.innerHTML = '';
+                        };
 
                         eventSource.onmessage = function (event) {
                             const data = event.data.split('\n').join('');
