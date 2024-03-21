@@ -12,6 +12,7 @@ import googlemaps
 from datetime import datetime
 import os
 import json
+from model.OpenAiModel.imageGeneration import ImageGeneration
 
 client = CLIENT
 
@@ -208,5 +209,6 @@ class Controller:
             clean_up_thread.start()
            
 
-    def get_ai_image_res(self,prompt):
-        return None
+    def get_ai_image_url(self,prompt):
+        return ImageGeneration().get_image_response(prompt)
+        

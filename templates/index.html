@@ -287,6 +287,7 @@
             <div class="input-container">
                 <input id="inputField" type="text" class="input-field" placeholder="Input Field">
                 <button id="submitButton" class="enter-button">Enter</button>
+                <button id="clearButton" class="enter-button">Clear</button>
             </div>
         </div>
         <div class="right-section">
@@ -336,6 +337,13 @@
         const userInput = document.getElementById('inputField');
         const outPutField = document.getElementById('outputField');
         let currentAssistant = document.getElementById('post_accident');
+        const clearButton = document.getElementById('clearButton');
+        clearButton.addEventListener('click', () => {
+            if (eventSource) {
+                eventSource.close();
+            }
+            outPutField.innerHTML = '';
+        });
         let eventSource;
         function sendRequest() {
             //const url = `http://localhost:80/${currentAssistant.id}`;
