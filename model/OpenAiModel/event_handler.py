@@ -1,7 +1,10 @@
 from typing_extensions import override
 from openai import AssistantEventHandler
 from multiprocessing import Queue
- 
+
+from controller import controller
+
+
 # First, we create a EventHandler class to define
 # how we want to handle the events in the response stream.
 
@@ -33,11 +36,12 @@ class EventHandler(AssistantEventHandler):
     def on_tool_call_delta(self, delta, snapshot):
         if delta.type == 'code_interpreter':
             if delta.code_interpreter.input:
-                self.controller.output = delta.code_interpreter.input
+                controller.output = delta.code_interpreter.input
             if delta.code_interpreter.outputs:
-     
-                self.controller.output = "\n\noutput >"
-    
+                controller.output = "\n\noutput >"
+
+        return
+
     def close(self):
         self.queue.close()
         super().close()
