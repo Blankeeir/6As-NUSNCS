@@ -27,10 +27,10 @@ class ChatCompletion(object):
                     "role": "system",
                     "content": SYSTEM
                 },
-                {
-                    "role": "assistant",
-                    "content": EXAMPLE
-                }
+                # {
+                #     "role": "assistant",
+                #     "content": EXAMPLE
+                # }
             ],
 
             model = self.model_name,

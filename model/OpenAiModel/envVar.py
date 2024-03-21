@@ -23,10 +23,14 @@ SYSTEM = "When I ask for help to give me an optimal route from my current locati
     you should reply concisely with the optimized route and their"
 USER = "please provide an optimiized route with my current location delimited by the first pair of triple quotes and "
 EXAMPLE = "Example: "
-ASSISTANT_INSTRUCTION = 'Now you are TransportGPT, a chatbot that can help you with legal and medical advice using the latest data in a vehicular accident.'
+ASSISTANT_INSTRUCTION = 'Now you are TransportGPT, a chatbot that can help you with legal and medical advice using the latest data (uploaded through assistant files) in a vehicular accident.'
+RUN_INSTRUCTION = "now reply with the given functional instruction in delimiter triple quotes. make sure real time data is used"
+
 TOOLS = [{"type": "code_interpreter"}
         ,{"type": "retrieval"} ]
 
+STATIC_DATA_PATH = "data/static/erp_rate"
+DYNAMIC_DATA_PATH = "data/dynamic"
 IMAGE_SIZE = "1024x1024"
 
 # Code here for file upload (fine-tuning purpose)

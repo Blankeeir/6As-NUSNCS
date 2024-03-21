@@ -33,7 +33,7 @@ def generate_static_fileID_list():
             #     )
             #     file_list = [test_file]
     file_list = []
-    for dirpath, dirnames, filenames in os.walk("data/static"):
+    for dirpath, dirnames, filenames in os.walk(STATIC_DATA_PATH):
         for filename in filenames:
             if is_json_file(os.path.join(dirpath, filename)):
                 file = client.files.create(
@@ -42,10 +42,12 @@ def generate_static_fileID_list():
                 )
                 file_list.append(file)
 
+
+
 def generate_dynamic_fileID_list():
     file_list = []
 
-    for dirpath, dirnames, filenames in os.walk("data/dynamic"):
+    for dirpath, dirnames, filenames in os.walk(DYNAMIC_DATA_PATH):
         for filename in filenames:
             if is_json_file(os.path.join(dirpath, filename)):
                 file = client.files.create(
@@ -68,7 +70,7 @@ class Controller:
         self.isProcessing = True
         self.assistant = client.beta.assistants.create(
             name="transportGPT",
-            description=ASSISTANT_INSTRUCTION,
+            description = ASSISTANT_INSTRUCTION,
             model= MODEL,
             tools= TOOLS,
             file_ids = generate_static_fileID_list()
@@ -190,12 +192,20 @@ class Controller:
 
             eventHandler = EventHandler()
 
+
+            ## add assistant files dynamic
+            for i in generate_dynamic_fileID_list():
+                assistant_file = client.beta.assistants.files.create(
+                    assistant_id = self.assistant.id,
+                    file_id= i
+                )
+
             # consumer = eventHandler.get_consumer()
             def clean_up():
                 with self.client.beta.threads.runs.create_and_stream(
-                        thread_id=thread.id,
+                        thread_id = thread.id,
                         assistant_id = self.assistant.id,
-                        instructions= ASSISTANT_INSTRUCTION,
+                        instructions = RUN_INSTRUCTION,
                         event_handler= eventHandler,
                 ) as stream:
                     stream.until_done()
