@@ -372,9 +372,10 @@
                         eventSource = new EventSource(`http://localhost:80/poc`);
 
                         eventSource.onmessage = function (event) {
-                            const data = event.data;
-                            console.log('Received data:', data);
-                            responseDiv.textContent += data;
+                            const data = event.data.split('\n').join('');
+                            console.log('Received data:');
+                            console.log(`|${data}|`);
+                            responseDiv.innerHTML += `<p>${data.trim()}</p>`;
                         };
 
                         eventSource.onerror = function (error) {

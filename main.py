@@ -95,7 +95,7 @@ def poc():
             try:
                 message = queue.get()
                 print(f"message is {message}")
-                yield f"data: {message}\n\n"  # Yield messages in the correct format
+                yield f"data: {message}\n"  # Yield messages in the correct format
             except:
                 break
 
