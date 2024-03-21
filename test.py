@@ -14,8 +14,13 @@ global _test_thread
 ###
 
 def modify_thread_msg(modify_thread, message_id, new_content):
-    pre = f"the user modify a message. here is the new message: {new_content}"
-    pre += "please base your reply on the thread messages newly created which are history messages and provide modified answer."
+    global _test_thread
+    global thread1
+    global thread2
+    global thread3
+    
+    pre = f"the user modify a message. here is the new message in triple quote delimeter: '''{new_content}"
+    pre += "''' please base your reply on the thread messages newly created which are history messages and provide modified answer."
 
     curr_thread_id = _test_thread.id
     thread_messages = client.beta.threads.messages.list(curr_thread_id)
@@ -24,7 +29,7 @@ def modify_thread_msg(modify_thread, message_id, new_content):
 
     # retrieve previous msg history
     client.beta.threads.delete(curr_thread_id)
-    print("delete ")
+    print(f"\n\n\ndelete {curr_thread_id}\n\n\n")
 
 
 
@@ -32,39 +37,52 @@ def modify_thread_msg(modify_thread, message_id, new_content):
 
 
 def create_new_thread_messages(modify_thread, message_id, new_content, thread_messages):
+    global _test_thread
+    global thread1
+    global thread2
+    global thread3
+
     new_thread_messages = []
-    for message in thread_messages:
+
+    print(len(thread_messages.data))
+    for i in range(len(thread_messages.data)):
+        message = thread_messages.data[len(thread_messages.data) - i - 1]
+        print(f"{message.id}       vs             {message_id}")
         if message.id != message_id:
-            new_thread_messages.append(message)
-        else:
-            break
-    if modify_thread == 1:
-        thread1 = client.beta.threads.create(new_thread_messages)
-        client.beta.threads.messages.create(thread1.id, role="user", content = new_content)
-    elif modify_thread == 2:
-        thread2 = client.beta.threads.create(new_thread_messages)
-        client.beta.threads.messages.create(thread2.id, role="user", content = new_content)
-    elif modify_thread == 3:
-        thread3 = client.beta.threads.create(new_thread_messages)
-        client.beta.threads.messages.create(thread3.id, role="user", content = new_content)
-    else:
-        _test_thread = client.beta.threads.create(new_thread_messages)
-        client.beta.threads.messages.create(_test_thread.id, role="user", content = new_content)
-        print(_test_thread)
+            try:
+                new_thread_messages.append({
+                    "role": "user",
+                    "content": message.content.text.value,
+                    })
+                
+                print(f"append \n {message.content.text.value} \n")
+            except Exception:
+                print(f"error in message: {message}")
+
+    print("\n\n\nnew\n\n\n")
+    print(new_thread_messages)
+    
+    
+    _test_thread = client.beta.threads.create(messages = new_thread_messages)
+    client.beta.threads.messages.create(_test_thread.id, role="user", content = new_content)
+    print(f"\n\n\nnew\n\n\n {_test_thread.id}")
+    
+    print(_test_thread)
+    print(client.beta.threads.messages.list(_test_thread.id))
 
 
 
 
-def test_image_generation(prompt_history):
-    image_url = Controller.get_ai_image_url(prompt_history)  # Replace with your image URL
-    response = requests.get(image_url)
-    if response.status_code == 200:
-        image_data = response.content
-        image = Image.open(BytesIO(image_data))
-        image.show()  # Display the image
-        return "Image displayed successfully"
-    else:
-        return "Failed to retrieve image"
+# def test_image_generation(prompt_history):
+#     image_url = Controller.get_ai_image_url(prompt_history)  # Replace with your image URL
+#     response = requests.get(image_url)
+#     if response.status_code == 200:
+#         image_data = response.content
+#         image = Image.open(BytesIO(image_data))
+#         image.show()  # Display the image
+#         return "Image displayed successfully"
+#     else:
+#         return "Failed to retrieve image"
 
 
 
@@ -89,7 +107,21 @@ if __name__ == '__main__':
         content= "I need to solve the equation `3x + 11 = 14`. Can you help me?"
     )
 
+    message2 = client.beta.threads.messages.create(
+        thread_id= _test_thread.id,
+        role="user",
+        content= "please provide detailed mathematical solution and explanation."
+    )
+
+    ## modify content
+    modified_prompt = input("user input: ")
+    modify_thread_msg(0, message.id, modified_prompt)
+
+    print(f"\n\n new thread \n\n\n{_test_thread.id}")
     print(client.beta.threads.messages.list(_test_thread.id))
+
+    
+
 '''print(res)
 
 response = res
