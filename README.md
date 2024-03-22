@@ -2,8 +2,11 @@
 A cutting-edge traffic management system based on large-language model. Integration of LLMS with existing data sources to enhance traffic flows, slash congestion, and boost green mobility.
 
 ## Before use
-Run `make install ` to download the dependencies. 
-Then you can run `python3 main.py` to run the server.
+```ruby
+make install
+```
+in terminal to download the dependencies. If it fails try install manually all required dependencies in requirements.txt through `pip install ...` 
+Then you can run `python3 main.py` (or `python main.py`)to run the server.
 You can test whether the setup is correct with:
 `curl -X GET http://127.0.0.1/echo -H "Content-Type: application/json" -d '{"user_input":"YourInputHere"}'`
 and
