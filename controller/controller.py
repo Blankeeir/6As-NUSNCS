@@ -25,23 +25,27 @@ def is_json_file(filename):
     except json.JSONDecodeError:
         return False
 
+
 def generate_static_fileID_list():
-            # if is_json_file(test_file_name):
-            #     test_file = client.files.create(
-            #         file=open(test_file_name, "rb"),
-            #         purpose="assistants"
-            #     )
-            #     file_list = [test_file]
+    # if is_json_file(test_file_name):
+    #     test_file = client.files.create(
+    #         file=open(test_file_name, "rb"),
+    #         purpose="assistants"
+    #     )
+    #     file_list = [test_file]
     file_list = []
     for dirpath, dirnames, filenames in os.walk(STATIC_DATA_PATH):
+        if dirpath.__contains__("data/static/rainfall"):
+            continue
+
         for filename in filenames:
             if is_json_file(os.path.join(dirpath, filename)):
                 file = client.files.create(
                     file=open(os.path.join(dirpath, filename), "rb"),
                     purpose="assistants"
                 )
-                file_list.append(file)
-
+                file_list.append(file.id)
+    return file_list
 
 
 def generate_dynamic_fileID_list():
@@ -61,8 +65,6 @@ def generate_dynamic_fileID_list():
     return file_id_list
 
 
-
-
 class Controller:
     def __init__(self):
         self.client = CLIENT
@@ -70,10 +72,10 @@ class Controller:
         self.isProcessing = True
         self.assistant = client.beta.assistants.create(
             name="transportGPT",
-            description = ASSISTANT_INSTRUCTION,
-            model= MODEL,
-            tools= TOOLS,
-            file_ids = generate_static_fileID_list()
+            description=ASSISTANT_INSTRUCTION,
+            model=MODEL,
+            tools=TOOLS,
+            file_ids=generate_static_fileID_list()
         )
 
     # Functions to get the static data from ../../data folder
@@ -156,9 +158,15 @@ class Controller:
 
     def route_planner_res(self, prompt, thread):
         location = self.parse_input(prompt)
-        loc = location if location else "Singapore" 
+        loc = location if location else "Singapore"
         prompt += f"\nI am at this location: " + loc + "\n"
-        prompt += f"please recommend me on the best route to take to my destination given my current start location and end destination"
+        prompt += f"please recommend me on the best route to take to my destination given my current start location and end destination\n"
+        prompt += f"When you are created, there is some static data extracted from route and price api is inserted into you, use these data for the prompt.\n"
+        prompt += f"Whenever there is a command, new real-time data is inserted into you, use these data for the prompt later as well.\n"
+        prompt += f"please analyse the data and give me the best route to take to my destination\n"
+        prompt += f"please consider my preferences on ERP rate and eco-friendliness based on statistical evidence as well\n"
+        prompt += f"Just give me the route and the cost-benefit analysis, don't give me anything else other than the route and the cost-benefit analysis\n"
+
         ## prompt engineering according to choices
         client.beta.threads.messages.create(
             thread.id,
@@ -192,21 +200,20 @@ class Controller:
 
             eventHandler = EventHandler()
 
-
             ## add assistant files dynamic
             for i in generate_dynamic_fileID_list():
                 assistant_file = client.beta.assistants.files.create(
-                    assistant_id = self.assistant.id,
-                    file_id= i
+                    assistant_id=self.assistant.id,
+                    file_id=i
                 )
 
             # consumer = eventHandler.get_consumer()
             def clean_up():
                 with self.client.beta.threads.runs.create_and_stream(
-                        thread_id = thread.id,
-                        assistant_id = self.assistant.id,
-                        instructions = RUN_INSTRUCTION,
-                        event_handler= eventHandler,
+                        thread_id=thread.id,
+                        assistant_id=self.assistant.id,
+                        instructions=RUN_INSTRUCTION,
+                        event_handler=eventHandler,
                 ) as stream:
                     stream.until_done()
                     self.isProcessing = False
@@ -229,7 +236,7 @@ class Controller:
         prompt += "I want to let the image be the map with route suggested by the assistant\
                 (assistan generate from user input, with location and destination specified and user\
                 preferences from previous user input such as weather conditions and pricing \
-                (what ever specified by the user)) the desired way for travleing and route has \
+                (what ever specified by the user)) the desired way for traveling and route has \
                       been generated by the assistant already, should highlight the route on the \
                         map image generated, shou base on the data files we'''"
 
