@@ -15,7 +15,7 @@ import json
 from model.OpenAiModel.imageGeneration import ImageGeneration
 
 client = CLIENT
-
+prev_dynamic_data = []
 
 def is_json_file(filename):
     try:
@@ -135,7 +135,7 @@ class Controller:
         loc = location if location else "Singapore"
         prompt = f"I am at this location: "
         prompt += loc + "\n"
-        prompt += f"I just had an vehicular accident, "
+        prompt += f"I just had an vehicular accident that is not recorded in the data in the files, "
         prompt += accident_description + "\n"
         prompt += f"please recommend me on the best medical advice" \
                   f"and legal advice given my current situation"
@@ -176,6 +176,7 @@ class Controller:
         self.get_ai_res(thread)
 
     def route_info_res(self, prompt, thread):
+        prompt += f" Note: the files: estimated_travel_time, traffic_advisory, traffic_incidents, traffic_speed_band are based on current conditions, do take this as being accurate\n"
         client.beta.threads.messages.create(
             thread.id,
             role="user",
@@ -193,19 +194,35 @@ class Controller:
         directions_result = gmaps.directions(start, end, mode="transit", departure_time=now)
         return directions_result
 
+
+
     def get_ai_res(self, thread):
         try:
+            global prev_dynamic_data
+
             self.output = ""
             self.isProcessing = True
 
             eventHandler = EventHandler()
 
+            ## delete previous dynamic data
+            if prev_dynamic_data:
+                for i in prev_dynamic_data:
+                    client.beta.assistants.files.delete(
+                        assistant_id=self.assistant.id,
+                        file_id=i
+                    )
+
+            dynamic_data_file_list = generate_dynamic_fileID_list()
+            prev_dynamic_data = dynamic_data_file_list
             ## add assistant files dynamic
-            for i in generate_dynamic_fileID_list():
+            for i in dynamic_data_file_list:
                 assistant_file = client.beta.assistants.files.create(
                     assistant_id=self.assistant.id,
                     file_id=i
                 )
+
+
 
             # consumer = eventHandler.get_consumer()
             def clean_up():
