@@ -5,8 +5,17 @@ A cutting-edge traffic management system based on large-language model. Integrat
 ```ruby
 make install
 ```
-in terminal to download the dependencies. If it fails try install manually all required dependencies in requirements.txt through `pip install ...` 
-Then you can run `python3 main.py` (or `python main.py`)to run the server.
+in terminal to download the dependencies. 
+If it fails try install manually all required dependencies in `requirements.txt` through 
+`pip install ...` 
+
+Remember to paste `OPENAI_API_KEY = (replace with your own api key from openai)` into `.env.dev` before run.
+## Run server
+```ruby
+python3 main.py
+```
+(or `python main.py`)to run the server.
+
 You can test whether the setup is correct with:
 `curl -X GET http://127.0.0.1/echo -H "Content-Type: application/json" -d '{"user_input":"YourInputHere"}'`
 and
